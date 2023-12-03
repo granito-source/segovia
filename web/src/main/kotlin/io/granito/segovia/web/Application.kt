@@ -1,0 +1,58 @@
+package io.granito.segovia.web
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include
+import com.fasterxml.jackson.databind.MapperFeature
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
+import org.springframework.boot.runApplication
+import org.springframework.context.annotation.Bean
+import org.springframework.core.io.ClassPathResource
+import org.springframework.core.io.Resource
+import org.springframework.hateoas.config.EnableHypermediaSupport
+import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType
+import org.springframework.http.CacheControl
+import org.springframework.web.reactive.config.ResourceHandlerRegistry
+import org.springframework.web.reactive.config.WebFluxConfigurer
+import org.springframework.web.reactive.resource.PathResourceResolver
+import reactor.core.publisher.Mono
+import java.util.concurrent.TimeUnit
+
+private const val STATIC = "/META-INF/resources/"
+
+fun main(args: Array<String>) {
+    runApplication<Application>(*args)
+}
+
+@SpringBootApplication
+@EnableHypermediaSupport(type = [HypermediaType.HAL])
+open class Application: WebFluxConfigurer {
+    companion object {
+        private val INDEX = ClassPathResource("${STATIC}index.html")
+    }
+
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry)
+    {
+        registry
+            .addResourceHandler("/**")
+            .addResourceLocations("classpath:$STATIC")
+            .setCacheControl(CacheControl.maxAge(4, TimeUnit.HOURS))
+            .resourceChain(true)
+            .addResolver(object: PathResourceResolver() {
+                override fun getResource(path: String,
+                    location: Resource): Mono<Resource>
+                {
+                    val resource = location.createRelative(path)
+
+                    return Mono.just(if (resource.isReadable) resource else INDEX)
+                }
+            })
+    }
+
+    @Bean
+    open fun objectMapperBuilderCustomizer() = Jackson2ObjectMapperBuilderCustomizer {
+        it
+            .failOnUnknownProperties(true)
+            .featuresToEnable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+            .serializationInclusion(Include.NON_NULL)
+    }
+}
