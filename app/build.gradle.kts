@@ -11,10 +11,6 @@ dependencies {
     testImplementation("org.seleniumhq.selenium:selenium-support")
 }
 
-springBoot {
-    mainClass.set("io.granito.segovia.web.ApplicationKt")
-}
-
 tasks {
     processTestResources {
         from("src/test/doc")
@@ -25,6 +21,13 @@ tasks {
         testLogging.showStandardStreams = true
         systemProperties["concordion.output.dir"] = "${reporting.baseDir}/spec"
         include("**/*Fixture.class")
+    }
+
+    bootJar {
+        mainClass.set("io.granito.segovia.web.ApplicationKt")
+        manifest {
+            attributes("Main-Class" to "org.springframework.boot.loader.launch.PropertiesLauncher")
+        }
     }
 }
 
