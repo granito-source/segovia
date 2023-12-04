@@ -20,7 +20,8 @@ tasks {
     test {
         testLogging.showStandardStreams = true
         systemProperties["concordion.output.dir"] = "${reporting.baseDir}/spec"
-        include("**/*Fixture.class")
+        include("**/SpecFixture.class")
+        outputs.upToDateWhen { false }
     }
 
     bootJar {
