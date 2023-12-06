@@ -8,15 +8,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "18.x"
+          node-version: 18
           cache: npm
+          cache-dependency-path: ui/package-lock.json
       - name: Setup JDK
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: 17
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
