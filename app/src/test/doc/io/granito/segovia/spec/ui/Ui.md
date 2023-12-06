@@ -12,4 +12,8 @@ web site, then:
 * the [page](- "#body=text(body)") contains
   [Segovia](- "?=contains(#body, #TEXT)").
 
+Below is the screenshot of the main page.
+
+<span ext:screenshot=""></span>
+
 ### ~~Example~~

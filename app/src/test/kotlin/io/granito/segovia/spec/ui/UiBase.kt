@@ -1,6 +1,8 @@
 package io.granito.segovia.spec.ui
 
 import io.granito.segovia.spec.SpecBase
+import jakarta.annotation.PostConstruct
+import org.concordion.api.extension.Extension
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.SearchContext
@@ -14,10 +16,13 @@ import java.time.Duration
 
 abstract class UiBase: SpecBase() {
     @LocalServerPort
-    private var port = -1;
+    private var port = -1
 
     @Autowired
     private lateinit var webDriver: WebDriver
+
+    @Extension
+    private val screenshot = SeleniumScreenshotExtension()
 
     val uri: String
         get() {
@@ -30,6 +35,12 @@ abstract class UiBase: SpecBase() {
 
     val title: String
         get() = webDriver.title
+
+    @PostConstruct
+    fun uiBasePostConstruct() {
+        screenshot.setMaxWidth(300)
+        screenshot.setWebDriver(webDriver)
+    }
 
     fun load(uri: String) {
         webDriver.get("http://localhost:${port}${uri}")
