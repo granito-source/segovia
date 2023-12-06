@@ -7,8 +7,8 @@ dependencies {
     implementation(project(":segovia-web"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.concordion:concordion:4.0.1")
-    testImplementation("org.seleniumhq.selenium:selenium-chrome-driver")
-    testImplementation("org.seleniumhq.selenium:selenium-support")
+    testImplementation("org.junit.vintage:junit-vintage-engine")
+    testImplementation("org.seleniumhq.selenium:selenium-java")
 }
 
 tasks {

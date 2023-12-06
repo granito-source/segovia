@@ -1,29 +1,24 @@
-import { TestBed } from '@angular/core/testing';
+import { Spectator, createComponentFactory } from '@ngneat/spectator/jest';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [AppComponent],
-        }).compileComponents();
+    const createComponent = createComponentFactory({
+        component: AppComponent,
+        shallow: true
+    });
+    let spectator: Spectator<AppComponent>;
+
+    beforeEach(() => spectator = createComponent());
+
+    it('creates the app', () => {
+        expect(spectator.component).toBeTruthy();
     });
 
-    it('should create the app', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        const app = fixture.componentInstance;
-        expect(app).toBeTruthy();
+    it('sets title', () => {
+        expect(spectator.component.title).toBe('Segovia');
     });
 
-    it(`should have the 'segovia' title`, () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        const app = fixture.componentInstance;
-        expect(app.title).toEqual('segovia');
-    });
-
-    it('should render title', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-        const compiled = fixture.nativeElement as HTMLElement;
-        expect(compiled.querySelector('h1')?.textContent).toContain('Hello, segovia');
+    it('renders headline', () => {
+        expect(spectator.query('h1')).toHaveText('Segovia');
     });
 });
