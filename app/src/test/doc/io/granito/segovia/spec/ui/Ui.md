@@ -2,7 +2,7 @@
 
 The application provides a web-based user interface.
 
-### [Example](- "home")
+### [Home Page](- "home")
 
 When a user accesses **[/](- "load(#TEXT)")** URI at the application's
 web site, then:
@@ -16,4 +16,4 @@ Below is the screenshot of the main page.
 
 <span ext:screenshot=""></span>
 
-### ~~Example~~
+### ~~Home Page~~

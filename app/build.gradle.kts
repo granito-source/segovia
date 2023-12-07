@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation(project(":segovia-web"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux")
     testImplementation("org.concordion:concordion:4.0.1")
     testImplementation("org.concordion:concordion-screenshot-extension:1.3.0")
     testImplementation("org.junit.vintage:junit-vintage-engine")
