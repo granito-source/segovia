@@ -10,26 +10,42 @@ as evident from the root API entry point URI. The complete version
 of the API is reported to the client in the response from the root
 API request. The response also reports back if the server that handled
 the request wants drain the load balancer requests. The latter is
-indicated by the `status` property. Normally it is `UP`, but it will
+indicated by the `status` property. Normally it is `UP`, but it may
 change to `DRAIN` if the server needs to exclude itself from the
 service going forward.
 
-### [API Root](- "root")
+### [Status](- "status")
 
 When a client makes a **[GET](- "#method") [/api/v1](- "#uri")**
 [HTTP request](- "#response=http(#method, #uri)"), then the application
 responds with [200](- "?=#response.status") HTTP status and
 [application/hal+json](- "?=#response.contentType") body containing
-the following JSON:
+JSON with at least following properties:
 
-<pre concordion:assert-equals="prettyPrint(#response.body)">{
-  "_links" : {
-    "self" : {
-      "href" : "/api/v1"
-    }
-  },
+<pre concordion:assert-equals="containsJson(#response.body, #TEXT)">{
   "apiVersion" : "1.0.0-SNAPSHOT",
   "status" : "UP"
 }</pre>
 
-### ~~API Root~~
+### ~~Status~~
+
+The response is a HAL resource, meaning it contains HAL links:
+
+* `self` to request a refreshed copy of the object;
+* `sentence` to request a sentence to work with.
+
+### [HAL Links](- "links")
+
+When a client makes a **[GET](- "#method") [/api/v1](- "#uri")**
+[HTTP request](- "#response=http(#method, #uri)"), then the body
+will contain JSON with the following HAL links:
+
+<pre concordion:assert-equals="containsJson(#response.body, #TEXT)">{
+  "_links" : {
+    "self" : {
+      "href" : "/api/v1"
+    }
+  }
+}</pre>
+
+### ~~HAL Links~~

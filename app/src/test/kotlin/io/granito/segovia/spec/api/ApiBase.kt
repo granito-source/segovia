@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.granito.segovia.spec.SpecBase
 import org.concordion.api.MultiValueResult
 import org.concordion.api.MultiValueResult.multiValueResult
+import org.skyscreamer.jsonassert.JSONCompare
+import org.skyscreamer.jsonassert.JSONCompareMode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
-import java.nio.charset.StandardCharsets
 
 abstract class ApiBase: SpecBase() {
     @Autowired
@@ -18,12 +19,14 @@ abstract class ApiBase: SpecBase() {
     @Autowired
     private lateinit var webClient: WebTestClient
 
-    fun prettyPrint(json: ByteArray): String = try {
-        objectMapper
-            .writerWithDefaultPrettyPrinter()
-            .writeValueAsString(objectMapper.readTree(json))
-    } catch (_: Exception) {
-        json.toString(StandardCharsets.UTF_8)
+    fun containsJson(json: ByteArray?, expected: String?): String? {
+        val actual = json?.toString(Charsets.UTF_8)
+
+        return if (JSONCompare.compareJSON(expected, actual,
+            JSONCompareMode.LENIENT).passed())
+            expected
+        else
+            actual
     }
 
     fun http(method: String, uri: String) =
