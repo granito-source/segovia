@@ -1,8 +1,8 @@
-# User Interface
+# User interface
 
 The application provides a web-based user interface.
 
-### [Home Page](- "home")
+### [Home page](-)
 
 When a user accesses **[/](- "load(#TEXT)")** URI at the application's
 web site, then:
@@ -14,6 +14,6 @@ web site, then:
 
 Below is the screenshot of the main page.
 
-<span ext:screenshot=""></span>
+<span cx:screenshot=""></span>
 
-### ~~Home Page~~
+### ~~Home page~~

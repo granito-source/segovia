@@ -1,6 +1,7 @@
-# Application Programming Interface
+# Application programming interface
 
-The Application Programming Interface (API) uses
+The application programming interface (API) uses implements
+[REST](https://en.wikipedia.org/wiki/REST) web interface with
 [Hypertext Application Language (HAL)](https://en.wikipedia.org/wiki/Hypertext_Application_Language)
 to carry data between the back-end and the front-end of the application.
 The JSON encoding is [UTF-8](https://en.wikipedia.org/wiki/UTF-8).
@@ -14,7 +15,7 @@ indicated by the `status` property. Normally it is `UP`, but it may
 change to `DRAIN` if the server needs to exclude itself from the
 service going forward.
 
-### [Status](- "status")
+### [Status](-)
 
 When a client makes a **[GET](- "#method") [/api/v1](- "#uri")**
 [HTTP request](- "#response=http(#method, #uri)"), then the application
@@ -23,8 +24,8 @@ responds with [200](- "?=#response.status") HTTP status and
 JSON with at least following properties:
 
 <pre concordion:assert-equals="containsJson(#response.body, #TEXT)">{
-  "apiVersion" : "1.0.0-SNAPSHOT",
-  "status" : "UP"
+  "apiVersion": "1.0.0-SNAPSHOT",
+  "status": "UP"
 }</pre>
 
 ### ~~Status~~
@@ -32,20 +33,24 @@ JSON with at least following properties:
 The response is a HAL resource, meaning it contains HAL links:
 
 * `self` to request a refreshed copy of the object;
-* `sentence` to request a sentence to work with.
+* `sentence` to access a [sentence](sentence/Sentence.md "c:run")
+  to work with.
 
-### [HAL Links](- "links")
+### [HAL links](- "hal-links c:status=ExpectedToFail")
 
 When a client makes a **[GET](- "#method") [/api/v1](- "#uri")**
 [HTTP request](- "#response=http(#method, #uri)"), then the body
 will contain JSON with the following HAL links:
 
 <pre concordion:assert-equals="containsJson(#response.body, #TEXT)">{
-  "_links" : {
-    "self" : {
-      "href" : "/api/v1"
-    }
+  "_links": {
+    "self": { "href" : "/api/v1" },
+    "sentence": { "href" : "/api/v1/sentences/default" }
   }
 }</pre>
 
-### ~~HAL Links~~
+### ~~HAL links~~
+
+## Further details
+
+* [Working with sentence](sentence/Sentence.md "c:run").

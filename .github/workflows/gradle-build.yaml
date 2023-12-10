@@ -18,8 +18,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Setup ChromeDriver
-        uses: nanasess/setup-chromedriver@v2
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
