@@ -13,6 +13,9 @@ import org.springframework.test.context.ActiveProfiles
 @ConcordionOptions(declareNamespaces = ["cx", "urn:concordion-extensions:2010"])
 @FullOGNL
 abstract class SpecBase {
+    fun store(id: String, text: String) {
+    }
+
     fun contains(string: String?, sub: String?) =
         if (string != null && sub != null && string.contains(sub))
             sub
