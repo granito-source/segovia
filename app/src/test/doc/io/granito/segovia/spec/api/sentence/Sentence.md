@@ -28,7 +28,7 @@ JSON with at least following properties:
   "id": "first.one",
   "text": "Roberto se había levantado de la cama.",
   "_links": {
-    "self": { "href" : "/api/v1/sentences/first.one" }
+    "self": { "href": "/api/v1/sentences/first.one" }
   }
 }</pre>
 
