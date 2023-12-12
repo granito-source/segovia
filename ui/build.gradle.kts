@@ -36,7 +36,7 @@ tasks {
         dependsOn("npmInstall")
         description = "Run NPM project tests."
         executable = "npm"
-        args("test")
+        args("test", "--", "--ci")
     }
 
     jar {
