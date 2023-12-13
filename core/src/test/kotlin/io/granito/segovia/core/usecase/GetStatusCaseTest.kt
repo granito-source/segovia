@@ -3,6 +3,7 @@ package io.granito.segovia.core.usecase
 import io.granito.segovia.core.service.StatusService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import reactor.test.StepVerifier
 
 internal class GetStatusCaseTest {
     private val getStatusCase = StatusService("2.5.7")
@@ -14,9 +15,11 @@ internal class GetStatusCaseTest {
 
     @Test
     fun `getStatus() returns status, always`() {
-        val status = getStatusCase.getStatus()
-
-        assertThat(status.appVersion).isEqualTo("2.5.7")
-        assertThat(status.drain).isFalse
+        StepVerifier.create(getStatusCase.getStatus())
+            .assertNext {
+                assertThat(it.appVersion).isEqualTo("2.5.7")
+                assertThat(it.drain).isFalse
+            }
+            .verifyComplete()
     }
 }

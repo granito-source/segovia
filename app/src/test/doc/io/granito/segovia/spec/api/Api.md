@@ -36,7 +36,7 @@ The response is a HAL resource, meaning it contains HAL links:
 * `sentence` to access a [sentence](sentence/Sentence.md "c:run")
   to work with.
 
-### [HAL links](- "hal-links c:status=ExpectedToFail")
+### [HAL links](-)
 
 When a client makes a **[GET](- "#method") [/api/v1](- "#uri")**
 [HTTP request](- "#response=http(#method, #uri)"), then the body
