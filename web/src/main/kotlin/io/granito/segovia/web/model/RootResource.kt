@@ -14,6 +14,9 @@ class RootResource(val status: String, val apiVersion: String):
         this(if (status.drain) "DRAIN" else "UP", status.appVersion)
 
     init {
-        add(Link.of(ROOT), Link.of(SENTENCES, "sentences"))
+        add(
+            Link.of(ROOT),
+            Link.of(SENTENCES, "sentences")
+        )
     }
 }

@@ -3,7 +3,7 @@ package io.granito.segovia.web.controller
 import io.granito.segovia.core.usecase.FetchSentenceCase
 import io.granito.segovia.core.usecase.SearchSentencesCase
 import io.granito.segovia.web.NotFoundException
-import io.granito.segovia.web.model.SentenceModel
+import io.granito.segovia.web.model.SentenceResource
 import org.springframework.hateoas.CollectionModel
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.MediaTypes
@@ -22,14 +22,14 @@ class SentenceController(
     private val searchSentencesCase: SearchSentencesCase,
     private val fetchSentenceCase: FetchSentenceCase) {
     @GetMapping(SENTENCES)
-    fun get(): Mono<CollectionModel<SentenceModel>> =
+    fun get(): Mono<CollectionModel<SentenceResource>> =
         try {
             searchSentencesCase.search()
-                .map { SentenceModel(it.id, it.text) }
+                .map { SentenceResource(it) }
                 .collectList()
                 .map {
                     CollectionModel.of(it)
-                        .withFallbackType(SentenceModel::class.java)
+                        .withFallbackType(SentenceResource::class.java)
                         .add(Link.of(SENTENCES))
                 }
         } catch (ex: Exception) {
@@ -37,10 +37,10 @@ class SentenceController(
         }
 
     @GetMapping(SENTENCE)
-    fun getOne(@PathVariable("id") id: String): Mono<SentenceModel> =
+    fun getOne(@PathVariable("id") id: String): Mono<SentenceResource> =
         try {
             fetchSentenceCase.fetch(id)
-                .map { SentenceModel(id, it) }
+                .map { SentenceResource(it) }
                 .switchIfEmpty(Mono.error(
                     NotFoundException("sentence with ID '$id' is not found")))
         } catch (ex: Exception) {

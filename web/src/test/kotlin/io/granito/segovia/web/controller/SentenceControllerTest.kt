@@ -4,7 +4,7 @@ import io.granito.segovia.core.model.Sentence
 import io.granito.segovia.core.usecase.FetchSentenceCase
 import io.granito.segovia.core.usecase.SearchSentencesCase
 import io.granito.segovia.web.NotFoundException
-import io.granito.segovia.web.model.SentenceModel
+import io.granito.segovia.web.model.SentenceResource
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.groups.Tuple.tuple
 import org.junit.jupiter.api.Test
@@ -44,14 +44,14 @@ class SentenceControllerTest {
         StepVerifier.create(controller.get())
             .assertNext {
                 assertThat(it.resolvableType.resolveGeneric())
-                    .isEqualTo(SentenceModel::class.java)
+                    .isEqualTo(SentenceResource::class.java)
                 assertThat(it.content).isEmpty()
             }
             .verifyComplete()
     }
 
     @Test
-    fun `get() emits collection of models when search() emits sentences`() {
+    fun `get() emits collection of resources when search() emits sentences`() {
         val sentences = createCold<Sentence>()
             .emit(
                 Sentence("deadbeef", "One."),
@@ -64,9 +64,9 @@ class SentenceControllerTest {
         StepVerifier.create(controller.get())
             .assertNext {
                 assertThat(it.resolvableType.resolveGeneric())
-                    .isEqualTo(SentenceModel::class.java)
+                    .isEqualTo(SentenceResource::class.java)
                 assertThat(it.content)
-                    .extracting(SentenceModel::id, SentenceModel::text)
+                    .extracting(SentenceResource::id, SentenceResource::text)
                     .containsExactly(
                         tuple("deadbeef", "One."),
                         tuple("babefeed", "Two.")
@@ -121,7 +121,7 @@ class SentenceControllerTest {
 
     @Test
     fun `getOne() emits error when it does not exist`() {
-        val sentence = createCold<String>()
+        val sentence = createCold<Sentence>()
             .complete()
             .mono()
 
@@ -137,8 +137,8 @@ class SentenceControllerTest {
 
     @Test
     fun `getOne() emits sentence when it exists`() {
-        val sentence = createCold<String>()
-            .emit("Case returns something.")
+        val sentence = createCold<Sentence>()
+            .emit(Sentence("deadbeef", "Get it."))
             .mono()
 
         doReturn(sentence).`when`(fetchSentenceCase).fetch("deadbeef")
@@ -146,15 +146,15 @@ class SentenceControllerTest {
         StepVerifier.create(controller.getOne("deadbeef"))
             .assertNext {
                 assertThat(it.id).isEqualTo("deadbeef")
-                assertThat(it.text).isEqualTo("Case returns something.")
+                assertThat(it.text).isEqualTo("Get it.")
             }
             .verifyComplete()
     }
 
     @Test
     fun `getOne() adds self link when it returns the sentence`() {
-        val sentence = createCold<String>()
-            .emit("Case returns something.")
+        val sentence = createCold<Sentence>()
+            .emit(Sentence("deadbeef", "Get it."))
             .mono()
 
         doReturn(sentence).`when`(fetchSentenceCase).fetch("deadbeef")
@@ -170,7 +170,7 @@ class SentenceControllerTest {
     @Test
     fun `getOne() propagates error, when fetch() emits error`() {
         val t = RuntimeException("sentence")
-        val error = createCold<String>()
+        val error = createCold<Sentence>()
             .error(t)
             .mono()
 

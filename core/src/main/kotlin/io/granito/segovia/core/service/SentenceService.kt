@@ -9,5 +9,5 @@ import reactor.core.publisher.Mono
 class SentenceService: SearchSentencesCase, FetchSentenceCase {
     override fun search(): Flux<Sentence> = Flux.empty()
 
-    override fun fetch(id: String): Mono<String> = Mono.empty()
+    override fun fetch(id: String): Mono<Sentence> = Mono.empty()
 }
