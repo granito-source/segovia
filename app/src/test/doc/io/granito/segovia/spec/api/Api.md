@@ -15,7 +15,7 @@ indicated by the `status` property. Normally it is `UP`, but it may
 change to `DRAIN` if the server needs to exclude itself from the
 service going forward.
 
-### [Status](-)
+### [API Root](-)
 
 When a client makes a **[GET](- "#method") [/api/v1](- "#uri")**
 [HTTP request](- "#response=http(#method, #uri)"), then the application
@@ -28,7 +28,7 @@ JSON with at least following properties:
   "status": "UP"
 }</pre>
 
-### ~~Status~~
+### ~~API Root~~
 
 The response is a HAL resource, meaning it contains HAL links:
 
@@ -36,7 +36,7 @@ The response is a HAL resource, meaning it contains HAL links:
 * `sentences` to access a [sentences](sentences/Sentences.md "c:run")
   stored in the system.
 
-### [HAL links](- "hal-links c:status=ExpectedToFail")
+### [HAL links](-)
 
 When a client makes a **[GET](- "#method") [/api/v1](- "#uri")**
 [HTTP request](- "#response=http(#method, #uri)"), then the body

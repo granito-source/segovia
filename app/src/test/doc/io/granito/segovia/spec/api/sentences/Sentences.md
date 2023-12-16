@@ -25,9 +25,11 @@ responds with [200](- "?=#response.status") HTTP status and
 JSON with at least following properties:
 
 <pre concordion:assert-equals="containsJson(#response.body, #TEXT)">{
-  "start": 0,
+  "_links": {
+      "self": { "href": "/api/v1/sentences" }
+  },
   "_embedded": {
-    "values": {
+    "sentences": {
       "id": "first.one",
       "text": "Roberto se había levantado de la cama.",
       "_links": {

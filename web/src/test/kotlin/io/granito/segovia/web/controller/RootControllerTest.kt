@@ -38,16 +38,7 @@ internal class RootControllerTest {
     }
 
     @Test
-    fun `get() uses appVersion as apiVersion normally`() {
-        StepVerifier.create(controller.get())
-            .assertNext {
-                assertThat(it.apiVersion).isEqualTo("2.3.7")
-            }
-            .verifyComplete()
-    }
-
-    @Test
-    fun `get() returns UP status when not draining`() {
+    fun `get() emits UP status when not draining`() {
         StepVerifier.create(controller.get())
             .assertNext {
                 assertThat(it.status).isEqualTo("UP")
@@ -56,7 +47,7 @@ internal class RootControllerTest {
     }
 
     @Test
-    fun `get() returns DRAIN status when draining`() {
+    fun `get() emits DRAIN status when draining`() {
         val status = createCold<Status>()
             .emit(Status("1.2.3", true))
             .mono()
@@ -66,6 +57,15 @@ internal class RootControllerTest {
         StepVerifier.create(controller.get())
             .assertNext {
                 assertThat(it.status).isEqualTo("DRAIN")
+            }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `get() uses appVersion as apiVersion normally`() {
+        StepVerifier.create(controller.get())
+            .assertNext {
+                assertThat(it.apiVersion).isEqualTo("2.3.7")
             }
             .verifyComplete()
     }
@@ -81,11 +81,11 @@ internal class RootControllerTest {
     }
 
     @Test
-    fun `get() sets sentence HAL link normally`() {
+    fun `get() sets sentences HAL link normally`() {
         StepVerifier.create(controller.get())
             .assertNext {
-                assertThat(it.getRequiredLink("sentence").href)
-                    .isEqualTo("/api/v1/sentences/default")
+                assertThat(it.getRequiredLink("sentences").href)
+                    .isEqualTo("/api/v1/sentences")
             }
             .verifyComplete()
     }

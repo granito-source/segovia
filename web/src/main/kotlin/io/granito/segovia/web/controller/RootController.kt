@@ -1,8 +1,7 @@
 package io.granito.segovia.web.controller
 
 import io.granito.segovia.core.usecase.GetStatusCase
-import io.granito.segovia.web.model.StatusResource
-import org.springframework.hateoas.Link
+import io.granito.segovia.web.model.RootResource
 import org.springframework.hateoas.MediaTypes
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -15,15 +14,10 @@ const val ROOT = "/api/v1"
 @RequestMapping(ROOT, produces = [MediaTypes.HAL_JSON_VALUE])
 class RootController(private val getStatusCase: GetStatusCase) {
     @GetMapping
-    fun get(): Mono<StatusResource> =
+    fun get(): Mono<RootResource> =
         try {
             getStatusCase.getStatus()
-                .map {
-                    StatusResource(if (it.drain) "DRAIN" else "UP",
-                        it.appVersion)
-                        .add(Link.of(ROOT))
-                        .add(Link.of(SENTENCE, "sentence").expand("default"))
-                }
+                .map { RootResource(it) }
         } catch (ex: Exception) {
             Mono.error(ex)
         }
