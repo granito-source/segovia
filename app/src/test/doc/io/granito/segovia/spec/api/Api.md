@@ -33,10 +33,10 @@ JSON with at least following properties:
 The response is a HAL resource, meaning it contains HAL links:
 
 * `self` to request a refreshed copy of the object;
-* `sentence` to access a [sentence](sentence/Sentence.md "c:run")
-  to work with.
+* `sentences` to access a [sentences](sentences/Sentences.md "c:run")
+  stored in the system.
 
-### [HAL links](-)
+### [HAL links](- "hal-links c:status=ExpectedToFail")
 
 When a client makes a **[GET](- "#method") [/api/v1](- "#uri")**
 [HTTP request](- "#response=http(#method, #uri)"), then the body
@@ -45,7 +45,7 @@ will contain JSON with the following HAL links:
 <pre concordion:assert-equals="containsJson(#response.body, #TEXT)">{
   "_links": {
     "self": { "href": "/api/v1" },
-    "sentence": { "href": "/api/v1/sentences/default" }
+    "sentences": { "href": "/api/v1/sentences" }
   }
 }</pre>
 
@@ -53,4 +53,4 @@ will contain JSON with the following HAL links:
 
 ## Further details
 
-* [Working with sentence](sentence/Sentence.md "c:run").
+* [Working with sentences](sentences/Sentences.md "c:run").
