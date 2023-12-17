@@ -5,11 +5,26 @@ import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.repo.SentenceRepo
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.TreeMap
 
 class FakeSentenceRepo: SentenceRepo {
-    override fun load(id: Slug): Mono<Sentence> = Mono.empty()
+    private val content = TreeMap<Slug, Sentence>()
 
-    override fun select(): Flux<Sentence> = Flux.empty()
+    override fun load(id: Slug): Mono<Sentence> =
+        Mono.justOrEmpty(content[id])
 
-    override fun insert(sentence: Sentence): Mono<Unit> = Mono.empty()
+    override fun select(): Flux<Sentence> =
+        Flux.fromIterable(content.values)
+
+    override fun insert(sentence: Sentence): Mono<Unit> {
+        content[sentence.id] = sentence
+
+        return Mono.empty()
+    }
+
+    override fun clear(): Mono<Unit> {
+        content.clear()
+
+        return Mono.empty()
+    }
 }

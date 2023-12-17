@@ -12,7 +12,7 @@ A client can get a list of sentences by using an HTTP GET request
 for the sentence collection URI. Sentences are returned as a HAL
 collection.
 
-### [Get sentences](- "get-sentences c:status=ExpectedToFail")
+### [Get sentences](-)
 
 When a client makes a
 **[GET](- "#method") [/api/v1/sentences](- "#uri")**
@@ -23,39 +23,42 @@ JSON with at least following properties:
 
 <pre concordion:assert-equals="containsJson(#response.body, #TEXT)">{
   "_links": {
-      "self": { "href": "/api/v1/sentences" }
+    "self": { "href": "/api/v1/sentences" }
   },
   "_embedded": {
-    "sentences": {
-      "id": "first.one",
-      "text": "Roberto se había levantado de la cama.",
-      "_links": {
-        "self": { "href": "/api/v1/sentences/first.one" }
+    "sentences": [
+      {
+        "id": "h6kLGAVxboVG",
+        "text": "Roberto se había levantado de la cama.",
+        "_links": {
+          "self": { "href": "/api/v1/sentences/h6kLGAVxboVG" }
+        }
       }
-    }
+    ]
   }
 }</pre>
 
 ### ~~Get sentences~~
 
 A client can get any sentence stored in the application by
-using its identifier in the URI. If there is such sentence, it will
-be returned as a HAL resource.
+using its identifier in the URI. See `self` link in the example
+above. If there is a sentence with the provided identifier,
+it will be returned as a HAL resource.
 
-### [Get sentence](- "get-sentence c:status=ExpectedToFail")
+### [Get sentence](-)
 
 When a client makes a
-**[GET](- "#method") [/api/v1/sentences/first.one](- "#uri")**
+**[GET](- "#method") [/api/v1/sentences/h6kLGAVxboVG](- "#uri")**
 [HTTP request](- "#response=http(#method, #uri)"), then the application
 responds with [200](- "?=#response.status") HTTP status and
 [application/hal+json](- "?=#response.contentType") body containing
 JSON with at least following properties:
 
 <pre concordion:assert-equals="containsJson(#response.body, #TEXT)">{
-  "id": "first.one",
+  "id": "h6kLGAVxboVG",
   "text": "Roberto se había levantado de la cama.",
   "_links": {
-    "self": { "href": "/api/v1/sentences/first.one" }
+    "self": { "href": "/api/v1/sentences/h6kLGAVxboVG" }
   }
 }</pre>
 

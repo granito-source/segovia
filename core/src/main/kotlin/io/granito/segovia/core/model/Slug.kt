@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.util.Base64
 
-data class Slug(private val id: String) {
+data class Slug(private val id: String): Comparable<Slug> {
     companion object {
         private val digest = MessageDigest.getInstance("SHA-1")
 
@@ -18,6 +18,8 @@ data class Slug(private val id: String) {
                 StandardCharsets.UTF_8)))
             .substring(0, 12)
     }
+
+    override fun compareTo(other: Slug) = id.compareTo(other.id)
 
     override fun toString() = id
 }

@@ -1,6 +1,8 @@
 package io.granito.segovia.spec
 
+import io.granito.segovia.core.repo.SentenceRepo
 import io.granito.segovia.core.usecase.CreateSentenceCase
+import org.concordion.api.AfterExample
 import org.concordion.api.FullOGNL
 import org.concordion.api.option.ConcordionOptions
 import org.junit.runner.RunWith
@@ -17,6 +19,14 @@ import org.springframework.test.context.ActiveProfiles
 abstract class SpecBase {
     @Autowired
     private lateinit var createSentenceCase: CreateSentenceCase
+
+    @Autowired
+    private lateinit var sentenceRepo: SentenceRepo
+
+    @AfterExample
+    fun baseCleanUp() {
+        sentenceRepo.clear().block()
+    }
 
     fun store(text: String) {
         createSentenceCase.create(text).block()

@@ -11,4 +11,6 @@ interface SentenceRepo {
     fun select(): Flux<Sentence>
 
     fun insert(sentence: Sentence): Mono<Unit>
+
+    fun clear(): Mono<Unit>
 }
