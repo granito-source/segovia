@@ -7,10 +7,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.doReturn
-import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.lenient
 import org.mockito.junit.jupiter.MockitoSettings
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
+import org.mockito.kotlin.whenever
 import org.mockito.quality.Strictness
 import reactor.test.StepVerifier
 import reactor.test.publisher.TestPublisher.createCold
@@ -29,7 +30,7 @@ internal class RootControllerTest {
             .emit(Status("2.3.7", false))
             .mono()
 
-        lenient().doReturn(status).`when`(getStatusCase).getStatus()
+        lenient().doReturn(status).whenever(getStatusCase).getStatus()
     }
 
     @Test
@@ -52,7 +53,7 @@ internal class RootControllerTest {
             .emit(Status("1.2.3", true))
             .mono()
 
-        doReturn(status).`when`(getStatusCase).getStatus()
+        doReturn(status).whenever(getStatusCase).getStatus()
 
         StepVerifier.create(controller.get())
             .assertNext {
@@ -97,7 +98,7 @@ internal class RootControllerTest {
             .error(t)
             .mono()
 
-        doReturn(status).`when`(getStatusCase).getStatus()
+        doReturn(status).whenever(getStatusCase).getStatus()
 
         StepVerifier.create(controller.get())
             .verifyErrorSatisfies {
@@ -109,7 +110,7 @@ internal class RootControllerTest {
     fun `get() wraps exception, when getStatus() fails`() {
         val t = RuntimeException("status")
 
-        doThrow(t).`when`(getStatusCase).getStatus()
+        doThrow(t).whenever(getStatusCase).getStatus()
 
         StepVerifier.create(controller.get())
             .verifyErrorSatisfies {

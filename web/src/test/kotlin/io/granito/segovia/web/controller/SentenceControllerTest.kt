@@ -1,6 +1,7 @@
 package io.granito.segovia.web.controller
 
 import io.granito.segovia.core.model.Sentence
+import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.usecase.FetchSentenceCase
 import io.granito.segovia.core.usecase.SearchSentencesCase
 import io.granito.segovia.web.model.SentenceNotFoundException
@@ -10,9 +11,10 @@ import org.assertj.core.groups.Tuple.tuple
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.doReturn
-import org.mockito.Mockito.doThrow
 import org.mockito.junit.jupiter.MockitoSettings
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
+import org.mockito.kotlin.whenever
 import org.mockito.quality.Strictness
 import reactor.test.StepVerifier
 import reactor.test.publisher.TestPublisher.createCold
@@ -39,7 +41,7 @@ class SentenceControllerTest {
             .complete()
             .flux()
 
-        doReturn(sentences).`when`(searchSentencesCase).search()
+        doReturn(sentences).whenever(searchSentencesCase).search()
 
         StepVerifier.create(controller.get())
             .assertNext {
@@ -54,12 +56,12 @@ class SentenceControllerTest {
     fun `get() emits collection of resources when search() emits sentences`() {
         val sentences = createCold<Sentence>()
             .emit(
-                Sentence("deadbeef", "One."),
-                Sentence("babefeed", "Two.")
+                Sentence(Slug("deadbeef"), "One."),
+                Sentence(Slug("babefeed"), "Two.")
             )
             .flux()
 
-        doReturn(sentences).`when`(searchSentencesCase).search()
+        doReturn(sentences).whenever(searchSentencesCase).search()
 
         StepVerifier.create(controller.get())
             .assertNext {
@@ -78,10 +80,10 @@ class SentenceControllerTest {
     @Test
     fun `get() adds self link to collection`() {
         val sentences = createCold<Sentence>()
-            .emit(Sentence("deadbeef", "Llueve."))
+            .emit(Sentence("Llueve."))
             .flux()
 
-        doReturn(sentences).`when`(searchSentencesCase).search()
+        doReturn(sentences).whenever(searchSentencesCase).search()
 
         StepVerifier.create(controller.get())
             .assertNext {
@@ -95,11 +97,11 @@ class SentenceControllerTest {
     fun `get() propagates error, when search() emits error`() {
         val t = RuntimeException("sentences")
         val error = createCold<Sentence>()
-            .next(Sentence("deadbeef", "Se acabo."))
+            .next(Sentence("Se acabo."))
             .error(t)
             .flux()
 
-        doReturn(error).`when`(searchSentencesCase).search()
+        doReturn(error).whenever(searchSentencesCase).search()
 
         StepVerifier.create(controller.get())
             .verifyErrorSatisfies {
@@ -111,7 +113,7 @@ class SentenceControllerTest {
     fun `get() wraps exception, when search() fails`() {
         val t = RuntimeException("sentences")
 
-        doThrow(t).`when`(searchSentencesCase).search()
+        doThrow(t).whenever(searchSentencesCase).search()
 
         StepVerifier.create(controller.get())
             .verifyErrorSatisfies {
@@ -125,7 +127,7 @@ class SentenceControllerTest {
             .complete()
             .mono()
 
-        doReturn(sentence).`when`(fetchSentenceCase).fetch("deadbeef")
+        doReturn(sentence).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
 
         StepVerifier.create(controller.getOne("deadbeef"))
             .verifyErrorSatisfies {
@@ -138,10 +140,10 @@ class SentenceControllerTest {
     @Test
     fun `getOne() emits sentence when it exists`() {
         val sentence = createCold<Sentence>()
-            .emit(Sentence("deadbeef", "Get it."))
+            .emit(Sentence(Slug("deadbeef"), "Get it."))
             .mono()
 
-        doReturn(sentence).`when`(fetchSentenceCase).fetch("deadbeef")
+        doReturn(sentence).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
 
         StepVerifier.create(controller.getOne("deadbeef"))
             .assertNext {
@@ -154,10 +156,10 @@ class SentenceControllerTest {
     @Test
     fun `getOne() adds self link when it returns the sentence`() {
         val sentence = createCold<Sentence>()
-            .emit(Sentence("deadbeef", "Get it."))
+            .emit(Sentence(Slug("deadbeef"), "Get it."))
             .mono()
 
-        doReturn(sentence).`when`(fetchSentenceCase).fetch("deadbeef")
+        doReturn(sentence).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
 
         StepVerifier.create(controller.getOne("deadbeef"))
             .assertNext {
@@ -174,7 +176,7 @@ class SentenceControllerTest {
             .error(t)
             .mono()
 
-        doReturn(error).`when`(fetchSentenceCase).fetch("deadbeef")
+        doReturn(error).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
 
         StepVerifier.create(controller.getOne("deadbeef"))
             .verifyErrorSatisfies {
@@ -186,7 +188,7 @@ class SentenceControllerTest {
     fun `getOne() wraps exception, when fetch() fails`() {
         val t = RuntimeException("sentence")
 
-        doThrow(t).`when`(fetchSentenceCase).fetch("deadbeef")
+        doThrow(t).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
 
         StepVerifier.create(controller.getOne("deadbeef"))
             .verifyErrorSatisfies {

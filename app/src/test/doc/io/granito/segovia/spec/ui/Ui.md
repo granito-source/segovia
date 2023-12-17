@@ -21,8 +21,8 @@ Below is the screenshot of the main page.
 ### [Study](- "study c:status=ExpectedToFail")
 
 Given that the application has
-"[Roberto se había levantado de la cama.](- "#sentence")" sentence
-as **[default](- "store(#TEXT, #sentence)")**, when a user accesses
+"[Roberto se había levantado de la cama.](- "#sentence")"
+[sentence](- "store(#sentence)"), when a user accesses
 **[/study](- "load(#TEXT)")** URI, then:
 
 * the browser navigates to [/study](- "?=uri") URI;

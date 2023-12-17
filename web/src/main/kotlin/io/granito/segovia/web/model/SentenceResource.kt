@@ -9,7 +9,8 @@ import org.springframework.hateoas.server.core.Relation
 @Relation(itemRelation = "sentence", collectionRelation = "sentences")
 class SentenceResource(val id: String, val text: String):
     RepresentationModel<SentenceResource>() {
-    constructor(sentence: Sentence) : this(sentence.id, sentence.text)
+    constructor(sentence: Sentence):
+        this(sentence.id.toString(), sentence.text)
 
     init {
         add(Link.of(SENTENCE).expand(id))

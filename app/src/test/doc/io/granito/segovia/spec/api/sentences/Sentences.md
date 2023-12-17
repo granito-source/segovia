@@ -1,13 +1,10 @@
 # Sentence
 
-> WARNING: this is **not** the final version of the API, subject to
-> change.
-
 ### [Common assumptions](- "before")
 
-All examples below assume that the application has
-"[Roberto se había levantado de la cama.](- "#sentence")" sentence
-stored under **[first.one](- "store(#TEXT, #sentence)")** identifier.
+All examples below assume that the application has only
+"[Roberto se había levantado de la cama.](- "#sentence")"
+[sentence](- "store(#sentence)").
 
 ### ~~Common assumptions~~
 

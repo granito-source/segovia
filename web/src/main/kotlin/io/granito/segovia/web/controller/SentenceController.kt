@@ -1,5 +1,6 @@
 package io.granito.segovia.web.controller
 
+import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.usecase.FetchSentenceCase
 import io.granito.segovia.core.usecase.SearchSentencesCase
 import io.granito.segovia.web.model.SentenceNotFoundException
@@ -39,7 +40,7 @@ class SentenceController(
     @GetMapping(SENTENCE)
     fun getOne(@PathVariable("id") id: String): Mono<SentenceResource> =
         try {
-            fetchSentenceCase.fetch(id)
+            fetchSentenceCase.fetch(Slug(id))
                 .map { SentenceResource(it) }
                 .switchIfEmpty(Mono.error(SentenceNotFoundException(id)))
         } catch (ex: Exception) {

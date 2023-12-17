@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":segovia-core"))
     implementation("io.projectreactor:reactor-core")
     testImplementation(kotlin("test"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")

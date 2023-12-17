@@ -1,5 +1,6 @@
 package io.granito.segovia.web
 
+import io.granito.segovia.core.repo.SentenceRepo
 import io.granito.segovia.core.service.SentenceService
 import io.granito.segovia.core.service.StatusService
 import org.springframework.beans.factory.annotation.Qualifier
@@ -17,5 +18,6 @@ open class CoreConfig {
         StatusService(version)
 
     @Bean
-    open fun sentenceService() = SentenceService()
+    open fun sentenceService(sentenceRepo: SentenceRepo) =
+        SentenceService(sentenceRepo)
 }

@@ -1,8 +1,10 @@
 package io.granito.segovia.spec
 
+import io.granito.segovia.core.usecase.CreateSentenceCase
 import org.concordion.api.FullOGNL
 import org.concordion.api.option.ConcordionOptions
 import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.test.context.ActiveProfiles
@@ -13,7 +15,11 @@ import org.springframework.test.context.ActiveProfiles
 @ConcordionOptions(declareNamespaces = ["cx", "urn:concordion-extensions:2010"])
 @FullOGNL
 abstract class SpecBase {
-    fun store(id: String, text: String) {
+    @Autowired
+    private lateinit var createSentenceCase: CreateSentenceCase
+
+    fun store(text: String) {
+        createSentenceCase.create(text).block()
     }
 
     fun contains(string: String?, sub: String?) =
