@@ -1,7 +1,5 @@
 package io.granito.segovia.spec.api
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.granito.segovia.spec.SpecBase
 import org.concordion.api.MultiValueResult
 import org.concordion.api.MultiValueResult.multiValueResult
@@ -13,9 +11,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 
 abstract class ApiBase: SpecBase() {
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
     @Autowired
     private lateinit var webClient: WebTestClient
 
@@ -49,17 +44,6 @@ abstract class ApiBase: SpecBase() {
             .returnResult(ByteArray::class.java)
         val status = result.status.value()
         val content = result.responseBodyContent
-        val body: Any? =
-            if (content == null || content.isEmpty())
-                null
-            else
-                if (status >= 400)
-                    objectMapper.readValue(content,
-                        object: TypeReference<HashMap<String, String>>() {})
-                else if (converter != null)
-                    converter(content)
-                else
-                    content
         val headers = result.responseHeaders
 
         return multiValueResult()
@@ -67,6 +51,10 @@ abstract class ApiBase: SpecBase() {
             .with("contentType", headers.contentType?.toString())
             .with("location", headers.location?.toString())
             .with("wwwAuthenticate", headers["WWW-Authenticate"])
-            .with("body", body)
+            .with("body", when {
+                content == null || content.isEmpty() -> null
+                converter != null -> converter(content)
+                else -> content
+            })
     }
 }

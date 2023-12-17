@@ -67,20 +67,21 @@ JSON with at least following properties:
 If no sentence with the provided identifier exists, the API will
 respond with `404` HTTP status code.
 
-### [Not found](- "not-found c:status=ExpectedToFail")
+### [Not found](-)
 
 When a client makes a
 **[GET](- "#method") [/api/v1/sentences/unknown](- "#uri")**
 [HTTP request](- "#response=http(#method, #uri)"), then the application
 responds with [404](- "?=#response.status") HTTP status and
-[application/json](- "?=#response.contentType") body containing
+[application/problem+json](- "?=#response.contentType") body containing
 JSON with at least following properties:
 
 <pre concordion:assert-equals="containsJson(#response.body, #TEXT)">{
-    "status": 404,
-    "error": "Not Found",
-    "message": "sentence identified by 'unknown' is not found",
-    "path": "/api/v1/sentences/unknown"
+  "status": 404,
+  "type": "https://segovia.granito.io/problem/not-found/sentence",
+  "title": "Sentence is not found.",
+  "detail": "Sentence identified by 'unknown' is not found.",
+  "instance": "/api/v1/sentences/unknown"
 }</pre>
 
 ### ~~Not found~~

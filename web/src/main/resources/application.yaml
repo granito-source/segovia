@@ -1,0 +1,4 @@
+spring:
+  webflux:
+    problemdetails:
+      enabled: true

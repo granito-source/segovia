@@ -3,7 +3,7 @@ package io.granito.segovia.web.controller
 import io.granito.segovia.core.model.Sentence
 import io.granito.segovia.core.usecase.FetchSentenceCase
 import io.granito.segovia.core.usecase.SearchSentencesCase
-import io.granito.segovia.web.NotFoundException
+import io.granito.segovia.web.model.SentenceNotFoundException
 import io.granito.segovia.web.model.SentenceResource
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.groups.Tuple.tuple
@@ -130,8 +130,8 @@ class SentenceControllerTest {
         StepVerifier.create(controller.getOne("deadbeef"))
             .verifyErrorSatisfies {
                 assertThat(it)
-                    .isInstanceOf(NotFoundException::class.java)
-                    .hasMessage("sentence with ID 'deadbeef' is not found")
+                    .isInstanceOf(SentenceNotFoundException::class.java)
+                    .hasMessageContaining("'deadbeef' is not found")
             }
     }
 
