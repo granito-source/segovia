@@ -1,6 +1,9 @@
-<header class="header"><h1>Segovia Application</h1></header>
+<header class="header"><h1>Segovia</h1></header>
 <nav class="nav">
-    <p>Navigation</p>
+    <ul>
+        <li><a routerLink="/">Home</a></li>
+        <li><a routerLink="/study">Study</a></li>
+    </ul>
 </nav>
 <main class="content">
     <h1>Main area</h1>
@@ -10,6 +13,7 @@
         and then to a four column layout by redefining the grid, and
         the placement of items on the grid.
     </p>
+    <router-outlet></router-outlet>
 </main>
 <aside class="sidebar"><p>Sidebar</p></aside>
 <div class="ad"><p>Advertising</p></div>

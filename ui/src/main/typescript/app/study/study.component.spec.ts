@@ -1,17 +1,17 @@
 import { Title } from '@angular/platform-browser';
-import { Spectator, createRoutingFactory,
+import { Spectator, createComponentFactory,
     mockProvider } from '@ngneat/spectator/jest';
-import { AppComponent } from './app.component';
+import { StudyComponent } from './study.component';
 
-describe('AppComponent', () => {
-    const createComponent = createRoutingFactory({
-        component: AppComponent,
+describe('StudyComponent', () => {
+    const createComponent = createComponentFactory({
+        component: StudyComponent,
         shallow: true,
         providers: [
             mockProvider(Title)
         ]
     });
-    let spectator: Spectator<AppComponent>;
+    let spectator: Spectator<StudyComponent>;
 
     beforeEach(() => spectator = createComponent());
 
@@ -21,10 +21,6 @@ describe('AppComponent', () => {
 
     it('sets title', () => {
         expect(spectator.inject(Title).setTitle)
-            .toHaveBeenCalledWith('Segovia');
-    });
-
-    it('renders headline', () => {
-        expect(spectator.query('h1')).toHaveText('Segovia');
+            .toHaveBeenCalledWith('Segovia: Study');
     });
 });
