@@ -49,8 +49,7 @@ p, ul, li, h1 {
         }
 
         .nav {
-            display: flex;
-            flex-direction: column;
+            display: initial;
             grid-column: span 1;
             grid-row: span 2;
         }
@@ -61,7 +60,7 @@ p, ul, li, h1 {
         }
 
         .sidebar {
-            display: block;
+            display: initial;
             grid-column: span 1;
         }
 
