@@ -5,12 +5,12 @@ The application provides a web-based user interface.
 ### [Home page](-)
 
 When a user accesses **[/](- "load(#TEXT)")** URI at the application's
-web site, then:
+site, then:
 
-* the browser navigates to [/](- "?=uri") URI;
-* the browser window has [Segovia](- "?=title") title;
-* the [page](- "#body=text(body)") contains
-  [Segovia](- "?=contains(#body, #TEXT)").
+* the browser navigates to [/home](- "?=uri") URI;
+* the browser window has [Segovia: Home](- "?=title") title;
+* the [page](- "#page=body") has
+  [Welcome to Segovia](- "?=text(pageHeader(#page))") header.
 
 Below is the screenshot of the main page.
 
@@ -26,12 +26,14 @@ Given that the application has
 **[/study](- "load(#TEXT)")** URI, then:
 
 * the browser navigates to [/study](- "?=uri") URI;
-* the browser window has [Segovia](- "?=title") title;
-* the [page](- "#body=text(body)") contains
-  [Roberto se había levantado de la cama.](- "?=contains(#body, #TEXT)")
-  text.
+* the browser window has [Segovia: Study](- "?=title") title;
+* the [page](- "#page=body") has [Study](- "?=text(pageHeader(#page))")
+  header;
+* it also presents the following
+  [sentence](- "#sentence=text(activeSentence(#page))") for study:
+  "[Roberto se había levantado de la cama.](- "?=contains(#sentence, #TEXT)")"
 
-Below is the screenshot of the main page.
+Below is the screenshot of the study page.
 
 <span cx:screenshot=""></span>
 

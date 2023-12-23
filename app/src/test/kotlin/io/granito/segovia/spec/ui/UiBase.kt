@@ -36,6 +36,9 @@ abstract class UiBase: SpecBase() {
     val title: String
         get() = webDriver.title
 
+    val body
+        get() = findByCss("body")
+
     @PostConstruct
     fun uiBasePostConstruct() {
         screenshot.setMaxWidth(300)
@@ -47,19 +50,25 @@ abstract class UiBase: SpecBase() {
         waitToLoad()
     }
 
+    fun pageHeader(container: SearchContext?): WebElement? {
+        return findByTestId(container, "page-header")
+    }
+
     fun text(element: WebElement?) = element?.text
 
-    protected fun find(css: String) = find(webDriver, css)
+    protected fun findByTestId(container: SearchContext?, id: String) =
+        findByCss(container, "[data-testid='$id']")
 
-    private fun find(container: SearchContext, css: String) =
-        try {
-            findAll(container, css).first()
-        } catch (ex: NoSuchElementException) {
-            null
-        }
+    private fun findByCss(css: String) = findByCss(webDriver, css)
 
-    private fun findAll(container: SearchContext, css: String) =
-        container.findElements(By.cssSelector(css))
+    private fun findByCss(container: SearchContext?, css: String) =
+        findAllByCss(container, css).firstOrNull()
+
+    private fun findAllByCss(container: SearchContext?, css: String) =
+        if (container == null)
+            emptyList()
+        else
+            container.findElements(By.cssSelector(css))
 
     private fun waitToLoad() {
         delay(100)

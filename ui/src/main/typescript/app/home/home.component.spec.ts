@@ -1,5 +1,5 @@
 import { Title } from '@angular/platform-browser';
-import { Spectator, createComponentFactory,
+import { Spectator, byTestId, createComponentFactory,
     mockProvider } from '@ngneat/spectator/jest';
 import { HomeComponent } from './home.component';
 
@@ -22,5 +22,10 @@ describe('HomeComponent', () => {
     it('sets title', () => {
         expect(spectator.inject(Title).setTitle)
             .toHaveBeenCalledWith('Segovia: Home');
+    });
+
+    it('sets page header', () => {
+        expect(spectator.query(byTestId('page-header')))
+            .toHaveText('Welcome to Segovia');
     });
 });
