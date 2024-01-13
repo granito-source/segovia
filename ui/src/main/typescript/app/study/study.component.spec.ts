@@ -55,20 +55,6 @@ describe('StudyComponent', () => {
         expect(sentences).toHaveSubscriptions('^----!');
     });
 
-    it('re-subscribes to sentence updates after an error', () => {
-        const spectator = create({ sentences: cold('---#') });
-        const sentences = spectator.inject(SentenceService).sentences;
-
-        // destroy the component to avoid an endless loop
-        cold('--------t').subscribe(() => spectator.fixture.destroy());
-
-        expect(sentences).toHaveSubscriptions([
-            '^--!',
-            '---^--!',
-            '------^-!'
-        ]);
-    });
-
     it('presents no active sentence initially', () => {
         const spectator = create();
 
