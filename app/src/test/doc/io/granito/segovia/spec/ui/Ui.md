@@ -18,7 +18,7 @@ Below is the screenshot of the main page.
 
 ### ~~Home page~~
 
-### [Study](- "study c:status=ExpectedToFail")
+### [Study](-)
 
 Given that the application has
 "[Roberto se había levantado de la cama.](- "#sentence")"
