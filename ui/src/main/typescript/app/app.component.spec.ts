@@ -1,21 +1,27 @@
-import { Spectator, createComponentFactory } from '@ngneat/spectator/jest';
+import { Title } from '@angular/platform-browser';
+import { Spectator, createRoutingFactory,
+    mockProvider } from '@ngneat/spectator/jest';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
-    const createComponent = createComponentFactory({
+    const createComponent = createRoutingFactory({
         component: AppComponent,
-        shallow: true
+        shallow: true,
+        providers: [
+            mockProvider(Title)
+        ]
     });
     let spectator: Spectator<AppComponent>;
 
     beforeEach(() => spectator = createComponent());
 
-    it('creates the app', () => {
+    it('gets created', () => {
         expect(spectator.component).toBeTruthy();
     });
 
     it('sets title', () => {
-        expect(spectator.component.title).toBe('Segovia');
+        expect(spectator.inject(Title).setTitle)
+            .toHaveBeenCalledWith('Segovia');
     });
 
     it('renders headline', () => {
