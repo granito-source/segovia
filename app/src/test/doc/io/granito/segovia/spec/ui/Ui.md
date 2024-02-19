@@ -18,6 +18,9 @@ Below is the screenshot of the main page.
 
 ### ~~Home page~~
 
+The application has _Study_ page that allows student learn the
+language using a text in the target language.
+
 ### [Study](-)
 
 Given that the application has
