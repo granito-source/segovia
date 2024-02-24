@@ -25,7 +25,7 @@ language using a text in the target language.
 
 Given that the application has
 "[Roberto se había levantado de la cama.](- "#sentence")"
-[sentence](- "store(#sentence)"), when a user accesses
+[sentence](- "store('es', #sentence)"), when a user accesses
 **[/study](- "load(#TEXT)")** URI, then:
 
 * the browser navigates to [/study](- "?=uri") URI;

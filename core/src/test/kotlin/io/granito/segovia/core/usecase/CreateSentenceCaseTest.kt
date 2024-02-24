@@ -1,5 +1,6 @@
 package io.granito.segovia.core.usecase
 
+import io.granito.segovia.core.model.Lang
 import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.repo.SentenceRepo
 import io.granito.segovia.core.service.SentenceService
@@ -37,7 +38,7 @@ class CreateSentenceCaseTest {
             id == slug && text == sentence
         })
 
-        StepVerifier.create(service.create("Llueve mucho."))
+        StepVerifier.create(service.create(Lang.ES, "Llueve mucho."))
             .assertNext {
                 assertThat(it.id).isEqualTo(slug)
                 assertThat(it.text).isEqualTo(sentence)
@@ -54,7 +55,7 @@ class CreateSentenceCaseTest {
 
         doReturn(result).whenever(sentenceRepo).insert(any())
 
-        StepVerifier.create(service.create("Se acabo."))
+        StepVerifier.create(service.create(Lang.ES, "Se acabo."))
             .verifyErrorSatisfies {
                 assertThat(it).isSameAs(t)
             }
@@ -66,7 +67,7 @@ class CreateSentenceCaseTest {
 
         doThrow(t).whenever(sentenceRepo).insert(any())
 
-        StepVerifier.create(service.create("Se acabo."))
+        StepVerifier.create(service.create(Lang.ES, "Se acabo."))
             .verifyErrorSatisfies {
                 assertThat(it).isSameAs(t)
             }

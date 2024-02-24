@@ -1,5 +1,6 @@
 package io.granito.segovia.web.controller
 
+import io.granito.segovia.core.model.Lang
 import io.granito.segovia.core.model.Sentence
 import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.usecase.FetchSentenceCase
@@ -34,10 +35,10 @@ class SentenceControllerTest {
         doReturn(createCold<Sentence>()
             .complete()
             .flux()
-        ).whenever(searchSentencesCase).search()
+        ).whenever(searchSentencesCase).search(Lang.ES)
 
         client.get()
-            .uri("/api/v1/sentences")
+            .uri("/api/v1/languages/es/sentences")
             .exchange()
             .expectStatus().isOk
             .expectHeader().contentType(MediaTypes.HAL_JSON)
@@ -46,7 +47,7 @@ class SentenceControllerTest {
                 """
                 {
                   "_links": {
-                    "self": { "href": "/api/v1/sentences" }
+                    "self": { "href": "/api/v1/languages/es/sentences" }
                   }
                 }
                 """.trimIndent(), true)
@@ -56,14 +57,14 @@ class SentenceControllerTest {
     fun `returns resource with sentences when search emits sentences`() {
         doReturn(createCold<Sentence>()
             .emit(
-                Sentence(Slug("deadbeef"), "One."),
-                Sentence(Slug("babefeed"), "Two.")
+                Sentence(Lang.EN, Slug("deadbeef"), "One."),
+                Sentence(Lang.EN, Slug("babefeed"), "Two.")
             )
             .flux()
-        ).whenever(searchSentencesCase).search()
+        ).whenever(searchSentencesCase).search(Lang.EN)
 
         client.get()
-            .uri("/api/v1/sentences")
+            .uri("/api/v1/languages/en/sentences")
             .exchange()
             .expectStatus().isOk
             .expectHeader().contentType(MediaTypes.HAL_JSON)
@@ -72,20 +73,24 @@ class SentenceControllerTest {
                 """
                 {
                   "_links": {
-                    "self": { "href": "/api/v1/sentences" }
+                    "self": { "href": "/api/v1/languages/en/sentences" }
                   },
                   "_embedded": {
                     "sentences": [
                       {
                         "_links": {
-                          "self": { "href": "/api/v1/sentences/deadbeef" }
+                          "self": {
+                            "href": "/api/v1/languages/en/sentences/deadbeef"
+                          }
                         },
                         "id": "deadbeef",
                         "text": "One."
                       },
                       {
                         "_links": {
-                          "self": { "href": "/api/v1/sentences/babefeed" }
+                          "self": {
+                            "href": "/api/v1/languages/en/sentences/babefeed"
+                          }
                         },
                         "id": "babefeed",
                         "text": "Two."
@@ -99,32 +104,32 @@ class SentenceControllerTest {
     @Test
     fun `returns error when search emits error`() {
         doReturn(createCold<Sentence>()
-            .next(Sentence("Se acabo."))
+            .next(Sentence(Lang.ES, "Se acabo."))
             .error(RuntimeException("sentences"))
             .flux()
-        ).whenever(searchSentencesCase).search()
+        ).whenever(searchSentencesCase).search(Lang.ES)
 
         val started = Instant.now()
 
         client.get()
-            .uri("/api/v1/sentences")
+            .uri("/api/v1/languages/es/sentences")
             .exchange()
             .expect5xxError(started, Instant.now())
-            .jsonPath("$.path").isEqualTo("/api/v1/sentences")
+            .jsonPath("$.path").isEqualTo("/api/v1/languages/es/sentences")
     }
 
     @Test
     fun `returns error when search throws exception`() {
         doThrow(RuntimeException("sentences"))
-            .whenever(searchSentencesCase).search()
+            .whenever(searchSentencesCase).search(Lang.FR)
 
         val started = Instant.now()
 
         client.get()
-            .uri("/api/v1/sentences")
+            .uri("/api/v1/languages/fr/sentences")
             .exchange()
             .expect5xxError(started, Instant.now())
-            .jsonPath("$.path").isEqualTo("/api/v1/sentences")
+            .jsonPath("$.path").isEqualTo("/api/v1/languages/fr/sentences")
     }
 
     @Test
@@ -132,10 +137,10 @@ class SentenceControllerTest {
         doReturn(createCold<Sentence>()
             .complete()
             .mono()
-        ).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
+        ).whenever(fetchSentenceCase).fetch(Lang.IT, Slug("deadbeef"))
 
         client.get()
-            .uri("/api/v1/sentences/deadbeef")
+            .uri("/api/v1/languages/it/sentences/deadbeef")
             .exchange()
             .expectStatus().isNotFound
             .expectHeader().contentType(MediaType.APPLICATION_PROBLEM_JSON)
@@ -144,7 +149,7 @@ class SentenceControllerTest {
                 """
                 {
                   "detail": "Sentence identified by 'deadbeef' is not found.",
-                  "instance": "/api/v1/sentences/deadbeef",
+                  "instance": "/api/v1/languages/it/sentences/deadbeef",
                   "status": 404,
                   "title": "Sentence is not found.",
                   "type": "https://segovia.granito.io/problem/not-found/sentence"
@@ -155,12 +160,12 @@ class SentenceControllerTest {
     @Test
     fun `returns sentence resource when it exists`() {
         doReturn(createCold<Sentence>()
-            .emit(Sentence(Slug("deadbeef"), "Get it."))
+            .emit(Sentence(Lang.EN, Slug("deadbeef"), "Get it."))
             .mono()
-        ).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
+        ).whenever(fetchSentenceCase).fetch(Lang.EN, Slug("deadbeef"))
 
         client.get()
-            .uri("/api/v1/sentences/deadbeef")
+            .uri("/api/v1/languages/en/sentences/deadbeef")
             .exchange()
             .expectStatus().isOk
             .expectHeader().contentType(MediaTypes.HAL_JSON)
@@ -169,7 +174,9 @@ class SentenceControllerTest {
                 """
                 {
                   "_links": {
-                    "self": { "href": "/api/v1/sentences/deadbeef" }
+                    "self": {
+                      "href": "/api/v1/languages/en/sentences/deadbeef"
+                    }
                   },
                   "id": "deadbeef",
                   "text": "Get it."
@@ -182,28 +189,30 @@ class SentenceControllerTest {
         doReturn(createCold<Sentence>()
             .error(RuntimeException("sentence"))
             .mono()
-        ).whenever(fetchSentenceCase).fetch(any())
+        ).whenever(fetchSentenceCase).fetch(any(), any())
 
         val started = Instant.now()
 
         client.get()
-            .uri("/api/v1/sentences/deadbeef")
+            .uri("/api/v1/languages/it/sentences/deadbeef")
             .exchange()
             .expect5xxError(started, Instant.now())
-            .jsonPath("$.path").isEqualTo("/api/v1/sentences/deadbeef")
+            .jsonPath("$.path")
+            .isEqualTo("/api/v1/languages/it/sentences/deadbeef")
     }
 
     @Test
     fun `returns error when fetching sentence throws exception`() {
         doThrow(RuntimeException("sentence"))
-            .whenever(fetchSentenceCase).fetch(any())
+            .whenever(fetchSentenceCase).fetch(any(), any())
 
         val started = Instant.now()
 
         client.get()
-            .uri("/api/v1/sentences/deadbeef")
+            .uri("/api/v1/languages/it/sentences/deadbeef")
             .exchange()
             .expect5xxError(started, Instant.now())
-            .jsonPath("$.path").isEqualTo("/api/v1/sentences/deadbeef")
+            .jsonPath("$.path")
+            .isEqualTo("/api/v1/languages/it/sentences/deadbeef")
     }
 }

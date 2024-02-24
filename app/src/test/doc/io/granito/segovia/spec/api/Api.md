@@ -45,7 +45,7 @@ will contain JSON with the following HAL links:
 <pre concordion:assert-equals="containsJson(#response.body, #TEXT)">{
   "_links": {
     "self": { "href": "/api/v1" },
-    "sentences": { "href": "/api/v1/sentences" }
+    "sentences": { "href": "/api/v1/languages/es/sentences" }
   }
 }</pre>
 

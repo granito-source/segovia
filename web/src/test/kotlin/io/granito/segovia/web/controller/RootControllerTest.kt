@@ -44,7 +44,7 @@ internal class RootControllerTest {
                 {
                   "_links": {
                     "self": { "href": "/api/v1" },
-                    "sentences": { "href": "/api/v1/sentences" }
+                    "sentences": { "href": "/api/v1/languages/es/sentences" }
                   },
                   "apiVersion": "2.3.7",
                   "status": "UP"
