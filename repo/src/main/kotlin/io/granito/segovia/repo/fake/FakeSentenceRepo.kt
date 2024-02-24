@@ -1,5 +1,6 @@
 package io.granito.segovia.repo.fake
 
+import io.granito.segovia.core.model.Lang
 import io.granito.segovia.core.model.Sentence
 import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.repo.SentenceRepo
@@ -12,16 +13,18 @@ import java.util.TreeMap
 @Repository
 @Lazy
 class FakeSentenceRepo: SentenceRepo {
-    private val content = TreeMap<Slug, Sentence>()
+    private val content = TreeMap<Lang, TreeMap<Slug, Sentence>>()
 
-    override fun load(id: Slug): Mono<Sentence> =
-        Mono.justOrEmpty(content[id])
+    override fun load(lang: Lang, id: Slug): Mono<Sentence> =
+        Mono.justOrEmpty(content[lang]?.get(id))
 
-    override fun select(): Flux<Sentence> =
-        Flux.fromIterable(content.values)
+    override fun select(lang: Lang): Flux<Sentence> =
+        Flux.fromIterable((content[lang] ?: TreeMap()).values)
 
     override fun insert(sentence: Sentence): Mono<Unit> {
-        content[sentence.id] = sentence
+        content.computeIfAbsent(sentence.lang) {
+            TreeMap<Slug, Sentence>()
+        }[sentence.id] = sentence
 
         return Mono.empty()
     }

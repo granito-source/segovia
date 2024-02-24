@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoSettings
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.whenever
@@ -30,7 +31,7 @@ class SearchSentencesCaseTest {
 
     @Test
     fun `search() returns same data as repo when select succeeds`() {
-        doReturn(result).whenever(sentenceRepo).select()
+        doReturn(result).whenever(sentenceRepo).select(Lang.EN)
 
         assertThat(service.search(Lang.EN)).isSameAs(result)
     }
@@ -39,7 +40,7 @@ class SearchSentencesCaseTest {
     fun `search() wraps exception when select fails`() {
         val t = RuntimeException("select")
 
-        doThrow(t).whenever(sentenceRepo).select()
+        doThrow(t).whenever(sentenceRepo).select(any())
 
         StepVerifier.create(service.search(Lang.ES))
             .verifyErrorSatisfies {
