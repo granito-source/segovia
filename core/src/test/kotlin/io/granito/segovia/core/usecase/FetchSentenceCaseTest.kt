@@ -34,7 +34,7 @@ class FetchSentenceCaseTest {
 
     @Test
     fun `fetch() returns same data as repo when load succeeds`() {
-        doReturn(result).whenever(sentenceRepo).load(id)
+        doReturn(result).whenever(sentenceRepo).load(Lang.EN, id)
 
         assertThat(service.fetch(Lang.EN, id)).isSameAs(result)
     }
@@ -43,7 +43,7 @@ class FetchSentenceCaseTest {
     fun `fetch() wraps exception when load fails`() {
         val t = RuntimeException("read")
 
-        doThrow(t).whenever(sentenceRepo).load(any())
+        doThrow(t).whenever(sentenceRepo).load(any(), any())
 
         StepVerifier.create(service.fetch(Lang.EN, id))
             .verifyErrorSatisfies {

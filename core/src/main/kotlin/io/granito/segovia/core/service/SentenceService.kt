@@ -14,14 +14,14 @@ class SentenceService(private val sentenceRepo: SentenceRepo):
     SearchSentencesCase, FetchSentenceCase, CreateSentenceCase {
     override fun search(lang: Lang): Flux<Sentence> =
         try {
-            sentenceRepo.select()
+            sentenceRepo.select(lang)
         } catch (ex: Exception) {
             Flux.error(ex)
         }
 
     override fun fetch(lang: Lang, id: Slug): Mono<Sentence> =
         try {
-            sentenceRepo.load(id)
+            sentenceRepo.load(lang, id)
         } catch (ex: Exception) {
             Mono.error(ex)
         }
