@@ -1,5 +1,6 @@
 package io.granito.segovia.core.usecase
 
+import io.granito.segovia.core.model.Lang
 import io.granito.segovia.core.model.Sentence
 import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.repo.SentenceRepo
@@ -35,7 +36,7 @@ class FetchSentenceCaseTest {
     fun `fetch() returns same data as repo when load succeeds`() {
         doReturn(result).whenever(sentenceRepo).load(id)
 
-        assertThat(service.fetch(id)).isSameAs(result)
+        assertThat(service.fetch(Lang.EN, id)).isSameAs(result)
     }
 
     @Test
@@ -44,7 +45,7 @@ class FetchSentenceCaseTest {
 
         doThrow(t).whenever(sentenceRepo).load(any())
 
-        StepVerifier.create(service.fetch(id))
+        StepVerifier.create(service.fetch(Lang.EN, id))
             .verifyErrorSatisfies {
                 assertThat(it).isSameAs(t)
             }

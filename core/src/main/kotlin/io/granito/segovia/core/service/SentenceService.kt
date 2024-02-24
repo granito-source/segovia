@@ -1,5 +1,6 @@
 package io.granito.segovia.core.service
 
+import io.granito.segovia.core.model.Lang
 import io.granito.segovia.core.model.Sentence
 import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.repo.SentenceRepo
@@ -11,23 +12,23 @@ import reactor.core.publisher.Mono
 
 class SentenceService(private val sentenceRepo: SentenceRepo):
     SearchSentencesCase, FetchSentenceCase, CreateSentenceCase {
-    override fun search(): Flux<Sentence> =
+    override fun search(lang: Lang): Flux<Sentence> =
         try {
             sentenceRepo.select()
         } catch (ex: Exception) {
             Flux.error(ex)
         }
 
-    override fun fetch(id: Slug): Mono<Sentence> =
+    override fun fetch(lang: Lang, id: Slug): Mono<Sentence> =
         try {
             sentenceRepo.load(id)
         } catch (ex: Exception) {
             Mono.error(ex)
         }
 
-    override fun create(text: String): Mono<Sentence> =
+    override fun create(lang: Lang, text: String): Mono<Sentence> =
         try {
-            val sentence = Sentence(text)
+            val sentence = Sentence(lang, text)
 
             sentenceRepo.insert(sentence).thenReturn(sentence)
         } catch (ex: Exception) {

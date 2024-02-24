@@ -7,12 +7,12 @@ import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.core.Relation
 
 @Relation(itemRelation = "sentence", collectionRelation = "sentences")
-class SentenceResource(val id: String, val text: String):
+class SentenceResource(language: String, val id: String, val text: String):
     RepresentationModel<SentenceResource>() {
     constructor(sentence: Sentence):
-        this(sentence.id.toString(), sentence.text)
+        this(sentence.lang.toString(), sentence.id.toString(), sentence.text)
 
     init {
-        add(Link.of(SENTENCE).expand(id))
+        add(Link.of(SENTENCE).expand(language, id))
     }
 }

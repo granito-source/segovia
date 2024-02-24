@@ -86,7 +86,7 @@ internal class RootControllerTest {
         StepVerifier.create(controller.get())
             .assertNext {
                 assertThat(it.getRequiredLink("sentences").href)
-                    .isEqualTo("/api/v1/sentences")
+                    .isEqualTo("/api/v1/languages/es/sentences")
             }
             .verifyComplete()
     }

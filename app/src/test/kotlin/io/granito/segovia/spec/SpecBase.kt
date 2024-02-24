@@ -1,5 +1,6 @@
 package io.granito.segovia.spec
 
+import io.granito.segovia.core.model.langFrom
 import io.granito.segovia.core.repo.SentenceRepo
 import io.granito.segovia.core.usecase.CreateSentenceCase
 import org.concordion.api.AfterExample
@@ -28,8 +29,8 @@ abstract class SpecBase {
         sentenceRepo.clear().block()
     }
 
-    fun store(text: String) {
-        createSentenceCase.create(text).block()
+    fun store(lang: String, text: String) {
+        createSentenceCase.create(langFrom(lang), text).block()
     }
 
     fun contains(string: String?, sub: String?) =

@@ -1,5 +1,6 @@
 package io.granito.segovia.web.controller
 
+import io.granito.segovia.core.model.Lang
 import io.granito.segovia.core.model.Sentence
 import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.usecase.FetchSentenceCase
@@ -41,9 +42,9 @@ class SentenceControllerTest {
             .complete()
             .flux()
 
-        doReturn(sentences).whenever(searchSentencesCase).search()
+        doReturn(sentences).whenever(searchSentencesCase).search(Lang.EN)
 
-        StepVerifier.create(controller.get())
+        StepVerifier.create(controller.get("en"))
             .assertNext {
                 assertThat(it.resolvableType.resolveGeneric())
                     .isEqualTo(SentenceResource::class.java)
@@ -56,14 +57,14 @@ class SentenceControllerTest {
     fun `get() emits collection of resources when search() emits sentences`() {
         val sentences = createCold<Sentence>()
             .emit(
-                Sentence(Slug("deadbeef"), "One."),
-                Sentence(Slug("babefeed"), "Two.")
+                Sentence(Lang.EN, Slug("deadbeef"), "One."),
+                Sentence(Lang.EN, Slug("babefeed"), "Two.")
             )
             .flux()
 
-        doReturn(sentences).whenever(searchSentencesCase).search()
+        doReturn(sentences).whenever(searchSentencesCase).search(Lang.EN)
 
-        StepVerifier.create(controller.get())
+        StepVerifier.create(controller.get("en"))
             .assertNext {
                 assertThat(it.resolvableType.resolveGeneric())
                     .isEqualTo(SentenceResource::class.java)
@@ -80,15 +81,15 @@ class SentenceControllerTest {
     @Test
     fun `get() adds self link to collection`() {
         val sentences = createCold<Sentence>()
-            .emit(Sentence("Llueve."))
+            .emit(Sentence(Lang.ES, "Llueve."))
             .flux()
 
-        doReturn(sentences).whenever(searchSentencesCase).search()
+        doReturn(sentences).whenever(searchSentencesCase).search(Lang.ES)
 
-        StepVerifier.create(controller.get())
+        StepVerifier.create(controller.get("es"))
             .assertNext {
                 assertThat(it.getRequiredLink("self").href)
-                    .isEqualTo("/api/v1/sentences")
+                    .isEqualTo("/api/v1/languages/es/sentences")
             }
             .verifyComplete()
     }
@@ -97,13 +98,13 @@ class SentenceControllerTest {
     fun `get() propagates error, when search() emits error`() {
         val t = RuntimeException("sentences")
         val error = createCold<Sentence>()
-            .next(Sentence("Se acabo."))
+            .next(Sentence(Lang.ES, "Se acabo."))
             .error(t)
             .flux()
 
-        doReturn(error).whenever(searchSentencesCase).search()
+        doReturn(error).whenever(searchSentencesCase).search(Lang.ES)
 
-        StepVerifier.create(controller.get())
+        StepVerifier.create(controller.get("es"))
             .verifyErrorSatisfies {
                 assertThat(it).isSameAs(t)
             }
@@ -113,9 +114,9 @@ class SentenceControllerTest {
     fun `get() wraps exception, when search() fails`() {
         val t = RuntimeException("sentences")
 
-        doThrow(t).whenever(searchSentencesCase).search()
+        doThrow(t).whenever(searchSentencesCase).search(Lang.FR)
 
-        StepVerifier.create(controller.get())
+        StepVerifier.create(controller.get("fr"))
             .verifyErrorSatisfies {
                 assertThat(it).isSameAs(t)
             }
@@ -127,9 +128,10 @@ class SentenceControllerTest {
             .complete()
             .mono()
 
-        doReturn(sentence).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
+        doReturn(sentence).whenever(fetchSentenceCase)
+            .fetch(Lang.IT, Slug("deadbeef"))
 
-        StepVerifier.create(controller.getOne("deadbeef"))
+        StepVerifier.create(controller.getOne("it", "deadbeef"))
             .verifyErrorSatisfies {
                 assertThat(it)
                     .isInstanceOf(SentenceNotFoundException::class.java)
@@ -140,12 +142,13 @@ class SentenceControllerTest {
     @Test
     fun `getOne() emits sentence when it exists`() {
         val sentence = createCold<Sentence>()
-            .emit(Sentence(Slug("deadbeef"), "Get it."))
+            .emit(Sentence(Lang.EN, Slug("deadbeef"), "Get it."))
             .mono()
 
-        doReturn(sentence).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
+        doReturn(sentence).whenever(fetchSentenceCase)
+            .fetch(Lang.EN, Slug("deadbeef"))
 
-        StepVerifier.create(controller.getOne("deadbeef"))
+        StepVerifier.create(controller.getOne("en", "deadbeef"))
             .assertNext {
                 assertThat(it.id).isEqualTo("deadbeef")
                 assertThat(it.text).isEqualTo("Get it.")
@@ -156,15 +159,16 @@ class SentenceControllerTest {
     @Test
     fun `getOne() adds self link when it returns the sentence`() {
         val sentence = createCold<Sentence>()
-            .emit(Sentence(Slug("deadbeef"), "Get it."))
+            .emit(Sentence(Lang.EN, Slug("deadbeef"), "Get it."))
             .mono()
 
-        doReturn(sentence).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
+        doReturn(sentence).whenever(fetchSentenceCase)
+            .fetch(Lang.EN, Slug("deadbeef"))
 
-        StepVerifier.create(controller.getOne("deadbeef"))
+        StepVerifier.create(controller.getOne("en", "deadbeef"))
             .assertNext {
                 assertThat(it.getRequiredLink("self").href)
-                    .isEqualTo("/api/v1/sentences/deadbeef")
+                    .isEqualTo("/api/v1/languages/en/sentences/deadbeef")
             }
             .verifyComplete()
     }
@@ -176,9 +180,10 @@ class SentenceControllerTest {
             .error(t)
             .mono()
 
-        doReturn(error).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
+        doReturn(error).whenever(fetchSentenceCase).fetch(
+            Lang.IT, Slug("deadbeef"))
 
-        StepVerifier.create(controller.getOne("deadbeef"))
+        StepVerifier.create(controller.getOne("it", "deadbeef"))
             .verifyErrorSatisfies {
                 assertThat(it).isSameAs(t)
             }
@@ -188,9 +193,10 @@ class SentenceControllerTest {
     fun `getOne() wraps exception, when fetch() fails`() {
         val t = RuntimeException("sentence")
 
-        doThrow(t).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
+        doThrow(t).whenever(fetchSentenceCase).fetch(
+            Lang.IT, Slug("deadbeef"))
 
-        StepVerifier.create(controller.getOne("deadbeef"))
+        StepVerifier.create(controller.getOne("it", "deadbeef"))
             .verifyErrorSatisfies {
                 assertThat(it).isSameAs(t)
             }

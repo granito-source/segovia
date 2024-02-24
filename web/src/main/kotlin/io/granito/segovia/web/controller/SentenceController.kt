@@ -1,6 +1,7 @@
 package io.granito.segovia.web.controller
 
 import io.granito.segovia.core.model.Slug
+import io.granito.segovia.core.model.langFrom
 import io.granito.segovia.core.usecase.FetchSentenceCase
 import io.granito.segovia.core.usecase.SearchSentencesCase
 import io.granito.segovia.web.model.SentenceNotFoundException
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
-const val SENTENCES = "$ROOT/sentences"
+const val LANGUAGES = "$ROOT/languages"
+const val LANGUAGE = "$LANGUAGES/{lang}"
+const val SENTENCES = "$LANGUAGE/sentences"
 const val SENTENCE = "$SENTENCES/{id}"
 
 @RestController
@@ -23,24 +26,28 @@ class SentenceController(
     private val searchSentencesCase: SearchSentencesCase,
     private val fetchSentenceCase: FetchSentenceCase) {
     @GetMapping(SENTENCES)
-    fun get(): Mono<CollectionModel<SentenceResource>> =
+    fun get(@PathVariable("lang") code: String):
+        Mono<CollectionModel<SentenceResource>> =
         try {
-            searchSentencesCase.search()
+            val lang = langFrom(code)
+
+            searchSentencesCase.search(lang)
                 .map { SentenceResource(it) }
                 .collectList()
                 .map {
                     CollectionModel.of(it)
                         .withFallbackType(SentenceResource::class.java)
-                        .add(Link.of(SENTENCES))
+                        .add(Link.of(SENTENCES).expand(lang))
                 }
         } catch (ex: Exception) {
             Mono.error(ex)
         }
 
     @GetMapping(SENTENCE)
-    fun getOne(@PathVariable("id") id: String): Mono<SentenceResource> =
+    fun getOne(@PathVariable("lang") code: String,
+        @PathVariable("id") id: String): Mono<SentenceResource> =
         try {
-            fetchSentenceCase.fetch(Slug(id))
+            fetchSentenceCase.fetch(langFrom(code), Slug(id))
                 .map { SentenceResource(it) }
                 .switchIfEmpty(Mono.error(SentenceNotFoundException(id)))
         } catch (ex: Exception) {

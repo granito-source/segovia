@@ -1,5 +1,6 @@
 package io.granito.segovia.core.usecase
 
+import io.granito.segovia.core.model.Lang
 import io.granito.segovia.core.model.Sentence
 import io.granito.segovia.core.repo.SentenceRepo
 import io.granito.segovia.core.service.SentenceService
@@ -31,7 +32,7 @@ class SearchSentencesCaseTest {
     fun `search() returns same data as repo when select succeeds`() {
         doReturn(result).whenever(sentenceRepo).select()
 
-        assertThat(service.search()).isSameAs(result)
+        assertThat(service.search(Lang.EN)).isSameAs(result)
     }
 
     @Test
@@ -40,7 +41,7 @@ class SearchSentencesCaseTest {
 
         doThrow(t).whenever(sentenceRepo).select()
 
-        StepVerifier.create(service.search())
+        StepVerifier.create(service.search(Lang.ES))
             .verifyErrorSatisfies {
                 assertThat(it).isSameAs(t)
             }
