@@ -25,6 +25,7 @@ tasks {
         systemProperties["concordion.output.dir"] = "${reporting.baseDir}/spec"
         include("**/SpecFixture.class")
         outputs.upToDateWhen { false }
+        jvmArgs("-XX:+EnableDynamicAgentLoading", "-Xshare:off")
     }
 
     bootJar {
