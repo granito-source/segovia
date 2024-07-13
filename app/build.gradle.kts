@@ -4,10 +4,13 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":segovia-core"))
+    implementation(project(":segovia-repo"))
     implementation(project(":segovia-web"))
+    implementation("org.springframework.boot:spring-boot-starter")
     testImplementation(project(":segovia-core"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-webflux")
+    testImplementation("org.springframework:spring-webflux")
     testImplementation("org.concordion:concordion:4.0.1")
     testImplementation("org.concordion:concordion-screenshot-extension:1.3.0")
     testImplementation("org.seleniumhq.selenium:selenium-java")
@@ -29,7 +32,7 @@ tasks {
     }
 
     bootJar {
-        mainClass.set("io.granito.segovia.web.ApplicationKt")
+        mainClass.set("io.granito.segovia.app.ApplicationKt")
         manifest {
             attributes("Main-Class" to "org.springframework.boot.loader.launch.PropertiesLauncher")
         }

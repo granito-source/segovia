@@ -3,10 +3,14 @@ package io.granito.segovia.repo.fake
 import io.granito.segovia.core.model.Sentence
 import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.repo.SentenceRepo
+import org.springframework.context.annotation.Lazy
+import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.TreeMap
 
+@Repository
+@Lazy
 class FakeSentenceRepo: SentenceRepo {
     private val content = TreeMap<Slug, Sentence>()
 

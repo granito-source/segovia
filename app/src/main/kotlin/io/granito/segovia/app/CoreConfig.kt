@@ -1,4 +1,4 @@
-package io.granito.segovia.web
+package io.granito.segovia.app
 
 import io.granito.segovia.core.repo.SentenceRepo
 import io.granito.segovia.core.service.SentenceService

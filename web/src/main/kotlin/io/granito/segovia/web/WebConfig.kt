@@ -2,10 +2,11 @@ package io.granito.segovia.web
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.databind.MapperFeature
-import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
-import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Lazy
 import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.Resource
 import org.springframework.hateoas.config.EnableHypermediaSupport
@@ -18,18 +19,13 @@ import reactor.core.publisher.Mono
 import java.util.concurrent.TimeUnit
 
 private const val STATIC = "/META-INF/resources/"
+private val INDEX = ClassPathResource("${STATIC}index.html")
 
-fun main(args: Array<String>) {
-    runApplication<Application>(*args)
-}
-
-@SpringBootApplication
+@Configuration
+@ComponentScan
 @EnableHypermediaSupport(type = [HypermediaType.HAL])
-open class Application: WebFluxConfigurer {
-    companion object {
-        private val INDEX = ClassPathResource("${STATIC}index.html")
-    }
-
+@Lazy
+open class WebConfig: WebFluxConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry)
     {
         registry
@@ -43,7 +39,8 @@ open class Application: WebFluxConfigurer {
                 {
                     val resource = location.createRelative(path)
 
-                    return Mono.just(if (resource.isReadable) resource else INDEX)
+                    return Mono.just(if (resource.isReadable) resource
+                        else INDEX)
                 }
             })
     }

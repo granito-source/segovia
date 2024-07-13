@@ -1,6 +1,6 @@
 package io.granito.segovia.spec
 
-import io.granito.segovia.web.Application
+import io.granito.segovia.app.Application
 import org.openqa.selenium.Dimension
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
