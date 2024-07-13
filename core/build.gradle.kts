@@ -12,7 +12,7 @@ dependencies {
     testRuntimeOnly("org.slf4j:slf4j-nop")
 }
 
-configurations.testRuntimeOnly {
+configurations.implementation {
     exclude(group = "ch.qos.logback", module = "logback-classic")
 }
 

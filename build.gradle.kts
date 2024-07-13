@@ -7,6 +7,7 @@ plugins {
 
 subprojects {
     apply(plugin = "io.spring.dependency-management")
+
 }
 
 allprojects {
