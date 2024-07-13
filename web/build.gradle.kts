@@ -13,6 +13,11 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly("org.slf4j:slf4j-nop")
+}
+
+configurations.testRuntimeOnly {
+    exclude(group = "ch.qos.logback", module = "logback-classic")
 }
 
 tasks {

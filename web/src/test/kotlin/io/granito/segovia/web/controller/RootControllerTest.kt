@@ -5,116 +5,112 @@ import io.granito.segovia.core.usecase.GetStatusCase
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito.lenient
-import org.mockito.junit.jupiter.MockitoSettings
+import org.mockito.Mockito.doThrow
 import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.whenever
-import org.mockito.quality.Strictness
-import reactor.test.StepVerifier
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.test.publisher.TestPublisher.createCold
+import java.time.Instant
 
-@MockitoSettings(strictness = Strictness.STRICT_STUBS)
+@WebFluxTest
 internal class RootControllerTest {
-    @Mock
+    @MockBean
     private lateinit var getStatusCase: GetStatusCase
 
-    @InjectMocks
-    private lateinit var controller: RootController
+    @Autowired
+    private lateinit var client: WebTestClient
 
     @BeforeEach
     fun setUp() {
-        val status = createCold<Status>()
+        doReturn(createCold<Status>()
             .emit(Status("2.3.7", false))
             .mono()
-
-        lenient().doReturn(status).whenever(getStatusCase).getStatus()
+        ).whenever(getStatusCase).getStatus()
     }
 
     @Test
-    fun `constructor creates controller normally`() {
-        assertThat(controller).isNotNull
+    fun `returns API Root normally`() {
+        client.get()
+            .uri("/api/v1")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .json(
+                """
+                {
+                  "_links": {
+                    "self": { "href": "/api/v1" },
+                    "sentences": { "href": "/api/v1/sentences" }
+                  },
+                  "apiVersion": "2.3.7",
+                  "status": "UP"
+                }
+                """.trimIndent())
     }
 
     @Test
-    fun `get() emits UP status when not draining`() {
-        StepVerifier.create(controller.get())
-            .assertNext {
-                assertThat(it.status).isEqualTo("UP")
-            }
-            .verifyComplete()
-    }
-
-    @Test
-    fun `get() emits DRAIN status when draining`() {
-        val status = createCold<Status>()
-            .emit(Status("1.2.3", true))
+    fun `returns DRAIN status when draining`() {
+        doReturn(createCold<Status>()
+            .emit(Status("2.3.7", true))
             .mono()
+        ).whenever(getStatusCase).getStatus()
 
-        doReturn(status).whenever(getStatusCase).getStatus()
-
-        StepVerifier.create(controller.get())
-            .assertNext {
-                assertThat(it.status).isEqualTo("DRAIN")
-            }
-            .verifyComplete()
+        client.get()
+            .uri("/api/v1")
+            .exchange()
+            .expectStatus().isOk
+            .expectBody().jsonPath("$.status").isEqualTo("DRAIN")
     }
 
     @Test
-    fun `get() uses appVersion as apiVersion normally`() {
-        StepVerifier.create(controller.get())
-            .assertNext {
-                assertThat(it.apiVersion).isEqualTo("2.3.7")
-            }
-            .verifyComplete()
-    }
-
-    @Test
-    fun `get() sets self HAL link normally`() {
-        StepVerifier.create(controller.get())
-            .assertNext {
-                assertThat(it.getRequiredLink("self").href)
-                    .isEqualTo("/api/v1")
-            }
-            .verifyComplete()
-    }
-
-    @Test
-    fun `get() sets sentences HAL link normally`() {
-        StepVerifier.create(controller.get())
-            .assertNext {
-                assertThat(it.getRequiredLink("sentences").href)
-                    .isEqualTo("/api/v1/sentences")
-            }
-            .verifyComplete()
-    }
-
-    @Test
-    fun `get() propagates error, when getStatus() emits error`() {
-        val t = RuntimeException("status")
-        val status = createCold<Status>()
-            .error(t)
+    fun `returns error when getting status emits error`() {
+        doReturn(createCold<Status>()
+            .error(RuntimeException("status"))
             .mono()
+        ).whenever(getStatusCase).getStatus()
 
-        doReturn(status).whenever(getStatusCase).getStatus()
+        val started = Instant.now()
 
-        StepVerifier.create(controller.get())
-            .verifyErrorSatisfies {
-                assertThat(it).isSameAs(t)
+        client.get()
+            .uri("/api/v1")
+            .exchange()
+            .expectStatus().is5xxServerError
+            .expectBody()
+            .jsonPath("$.path").isEqualTo("/api/v1")
+            .jsonPath("$.status").isEqualTo(500)
+            .jsonPath("$.error").isEqualTo("Internal Server Error")
+            .jsonPath("$.timestamp").value<String> {
+                assertThat(Instant.parse(it))
+                    .isAfter(started)
+                    .isBefore(Instant.now())
             }
+            .jsonPath("$.requestId").isNotEmpty
     }
 
     @Test
-    fun `get() wraps exception, when getStatus() fails`() {
+    fun `returns error when getting status throws exception`() {
         val t = RuntimeException("status")
 
         doThrow(t).whenever(getStatusCase).getStatus()
 
-        StepVerifier.create(controller.get())
-            .verifyErrorSatisfies {
-                assertThat(it).isSameAs(t)
+        val started = Instant.now()
+
+        client.get()
+            .uri("/api/v1")
+            .exchange()
+            .expectStatus().is5xxServerError
+            .expectBody()
+            .jsonPath("$.path").isEqualTo("/api/v1")
+            .jsonPath("$.status").isEqualTo(500)
+            .jsonPath("$.error").isEqualTo("Internal Server Error")
+            .jsonPath("$.timestamp").value<String> {
+                assertThat(Instant.parse(it))
+                    .isAfter(started)
+                    .isBefore(Instant.now())
             }
+            .jsonPath("$.requestId").isNotEmpty
     }
 }

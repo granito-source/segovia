@@ -2,10 +2,10 @@ package io.granito.segovia.web
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.databind.MapperFeature
+import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
 import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.Resource
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 private const val STATIC = "/META-INF/resources/"
 private val INDEX = ClassPathResource("${STATIC}index.html")
 
-@Configuration
+@SpringBootConfiguration
 @ComponentScan
 @EnableHypermediaSupport(type = [HypermediaType.HAL])
 @Lazy
