@@ -1,6 +1,7 @@
 .angular/
 .gradle/
 .idea/
+.kotlin/
 .settings/
 .vscode/
 build/

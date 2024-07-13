@@ -7,8 +7,7 @@ tasks {
         description = "Update NPM project version."
         inputs.property("npmVersion", version)
         outputs.file("package.json")
-        executable = "npm"
-        args("version", "--no-git-tag-version", "--allow-same-version", version)
+        commandLine("npm", "version", "--no-git-tag-version", "--allow-same-version", version)
     }
 
     register<Exec>("npmInstall") {
@@ -17,8 +16,7 @@ tasks {
         inputs.file("package.json")
         inputs.file("package-lock.json")
         outputs.file("node_modules/.package-lock.json")
-        executable = "npm"
-        args("ci")
+        commandLine("npm", "ci")
     }
 
     register<Exec>("npmBuild") {
@@ -28,15 +26,13 @@ tasks {
             exclude("**/*.spec.*")
         })
         outputs.dir("build/resources/main/META-INF/resources")
-        executable = "npm"
-        args("run", "build")
+        commandLine("npm", "run", "build")
     }
 
     register<Exec>("npmTest") {
         dependsOn("npmInstall")
         description = "Run NPM project tests."
-        executable = "npm"
-        args("test", "--", "--ci")
+        commandLine("npm", "test", "--", "--ci")
     }
 
     jar {
