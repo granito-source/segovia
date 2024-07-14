@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 const val SENTENCES = "$ROOT/sentences"
@@ -23,27 +24,19 @@ class SentenceController(
     private val searchSentencesCase: SearchSentencesCase,
     private val fetchSentenceCase: FetchSentenceCase) {
     @GetMapping(SENTENCES)
-    fun get(): Mono<CollectionModel<SentenceResource>> =
-        try {
-            searchSentencesCase.search()
-                .map { SentenceResource(it) }
-                .collectList()
-                .map {
-                    CollectionModel.of(it)
-                        .withFallbackType(SentenceResource::class.java)
-                        .add(Link.of(SENTENCES))
-                }
-        } catch (ex: Exception) {
-            Mono.error(ex)
+    fun get(): Mono<CollectionModel<SentenceResource>> = Flux
+        .defer { searchSentencesCase.search() }
+        .map { SentenceResource(it) }
+        .collectList()
+        .map {
+            CollectionModel.of(it)
+                .withFallbackType(SentenceResource::class.java)
+                .add(Link.of(SENTENCES))
         }
 
     @GetMapping(SENTENCE)
-    fun getOne(@PathVariable("id") id: String): Mono<SentenceResource> =
-        try {
-            fetchSentenceCase.fetch(Slug(id))
-                .map { SentenceResource(it) }
-                .switchIfEmpty(Mono.error(SentenceNotFoundException(id)))
-        } catch (ex: Exception) {
-            Mono.error(ex)
-        }
+    fun getOne(@PathVariable("id") id: String): Mono<SentenceResource> = Mono
+        .defer { fetchSentenceCase.fetch(Slug(id)) }
+        .map { SentenceResource(it) }
+        .switchIfEmpty(Mono.error(SentenceNotFoundException(id)))
 }

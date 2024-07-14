@@ -14,11 +14,7 @@ const val ROOT = "/api/v1"
 @RequestMapping(ROOT, produces = [MediaTypes.HAL_JSON_VALUE])
 class RootController(private val getStatusCase: GetStatusCase) {
     @GetMapping
-    fun get(): Mono<RootResource> =
-        try {
-            getStatusCase.getStatus()
-                .map { RootResource(it) }
-        } catch (ex: Exception) {
-            Mono.error(ex)
-        }
+    fun get(): Mono<RootResource> = Mono
+        .defer { getStatusCase.getStatus() }
+        .map { RootResource(it) }
 }
