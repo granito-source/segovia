@@ -5,7 +5,6 @@ import io.granito.segovia.core.usecase.FetchSentenceCase
 import io.granito.segovia.core.usecase.SearchSentencesCase
 import io.granito.segovia.web.model.SentenceNotFoundException
 import io.granito.segovia.web.model.SentenceResource
-import org.springframework.context.annotation.Lazy
 import org.springframework.hateoas.CollectionModel
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.MediaTypes
@@ -19,7 +18,6 @@ const val SENTENCES = "$ROOT/sentences"
 const val SENTENCE = "$SENTENCES/{id}"
 
 @RestController
-@Lazy
 @RequestMapping(produces = [MediaTypes.HAL_JSON_VALUE])
 class SentenceController(
     private val searchSentencesCase: SearchSentencesCase,

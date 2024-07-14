@@ -15,7 +15,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.test.publisher.TestPublisher.createCold
 import java.time.Instant
 
-@WebFluxTest
+@WebFluxTest(RootController::class)
 internal class RootControllerTest {
     @MockBean
     private lateinit var getStatusCase: GetStatusCase
