@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
@@ -9,13 +10,17 @@ import { RouterLink, RouterOutlet } from '@angular/router';
     imports: [
         CommonModule,
         RouterOutlet,
-        RouterLink
+        RouterLink,
+        MatIconModule
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-    constructor(private title: Title) {
+    constructor(private title: Title, iconRegistry: MatIconRegistry,
+        domSanitizer: DomSanitizer) {
+        iconRegistry.addSvgIconSet(
+            domSanitizer.bypassSecurityTrustResourceUrl('assets/mdi.svg'));
     }
 
     ngOnInit(): void {
