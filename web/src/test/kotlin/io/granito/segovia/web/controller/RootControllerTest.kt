@@ -2,7 +2,6 @@ package io.granito.segovia.web.controller
 
 import io.granito.segovia.core.model.Status
 import io.granito.segovia.core.usecase.GetStatusCase
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.doThrow
@@ -11,6 +10,7 @@ import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.hateoas.MediaTypes
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.test.publisher.TestPublisher.createCold
 import java.time.Instant
@@ -32,11 +32,12 @@ internal class RootControllerTest {
     }
 
     @Test
-    fun `returns API Root normally`() {
+    fun `returns API Root resource normally`() {
         client.get()
             .uri("/api/v1")
             .exchange()
             .expectStatus().isOk
+            .expectHeader().contentType(MediaTypes.HAL_JSON)
             .expectBody()
             .json(
                 """
@@ -77,17 +78,9 @@ internal class RootControllerTest {
         client.get()
             .uri("/api/v1")
             .exchange()
-            .expectStatus().is5xxServerError
-            .expectBody()
+            .expect5xxError(started, Instant.now())
             .jsonPath("$.path").isEqualTo("/api/v1")
-            .jsonPath("$.status").isEqualTo(500)
-            .jsonPath("$.error").isEqualTo("Internal Server Error")
-            .jsonPath("$.timestamp").value<String> {
-                assertThat(Instant.parse(it))
-                    .isAfter(started)
-                    .isBefore(Instant.now())
-            }
-            .jsonPath("$.requestId").isNotEmpty
+
     }
 
     @Test
@@ -101,16 +94,7 @@ internal class RootControllerTest {
         client.get()
             .uri("/api/v1")
             .exchange()
-            .expectStatus().is5xxServerError
-            .expectBody()
+            .expect5xxError(started, Instant.now())
             .jsonPath("$.path").isEqualTo("/api/v1")
-            .jsonPath("$.status").isEqualTo(500)
-            .jsonPath("$.error").isEqualTo("Internal Server Error")
-            .jsonPath("$.timestamp").value<String> {
-                assertThat(Instant.parse(it))
-                    .isAfter(started)
-                    .isBefore(Instant.now())
-            }
-            .jsonPath("$.requestId").isNotEmpty
     }
 }
