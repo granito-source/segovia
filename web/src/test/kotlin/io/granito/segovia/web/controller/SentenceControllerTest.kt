@@ -5,8 +5,9 @@ import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.usecase.FetchSentenceCase
 import io.granito.segovia.core.usecase.SearchSentencesCase
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.doThrow
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
@@ -181,7 +182,7 @@ class SentenceControllerTest {
         doReturn(createCold<Sentence>()
             .error(RuntimeException("sentence"))
             .mono()
-        ).whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
+        ).whenever(fetchSentenceCase).fetch(any())
 
         val started = Instant.now()
 
@@ -195,7 +196,7 @@ class SentenceControllerTest {
     @Test
     fun `returns error when fetching sentence throws exception`() {
         doThrow(RuntimeException("sentence"))
-            .whenever(fetchSentenceCase).fetch(Slug("deadbeef"))
+            .whenever(fetchSentenceCase).fetch(any())
 
         val started = Instant.now()
 
