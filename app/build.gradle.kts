@@ -8,7 +8,7 @@ dependencies {
     implementation(project(":segovia-repo"))
     implementation(project(":segovia-web"))
     implementation("org.springframework.boot:spring-boot-starter")
-    testImplementation(project(":segovia-core"))
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework:spring-webflux")
     testImplementation("org.concordion:concordion:4.0.1")
