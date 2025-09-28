@@ -1,17 +1,17 @@
 package io.granito.segovia.spec.ui
 
-import org.concordion.ext.ScreenshotExtension
-import org.concordion.ext.ScreenshotTaker
-import org.concordion.ext.ScreenshotUnavailableException
-import org.openqa.selenium.OutputType
-import org.openqa.selenium.TakesScreenshot
-import org.openqa.selenium.WebDriver
 import java.awt.Dimension
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.OutputStream
 import javax.imageio.ImageIO.getImageReadersBySuffix
 import javax.imageio.stream.MemoryCacheImageInputStream
+import org.concordion.ext.ScreenshotExtension
+import org.concordion.ext.ScreenshotTaker
+import org.concordion.ext.ScreenshotUnavailableException
+import org.openqa.selenium.OutputType
+import org.openqa.selenium.TakesScreenshot
+import org.openqa.selenium.WebDriver
 
 class SeleniumScreenshotExtension : ScreenshotExtension(), ScreenshotTaker {
     private lateinit var webDriver: WebDriver

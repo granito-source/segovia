@@ -1,5 +1,6 @@
 package io.granito.segovia.spec
 
+import java.util.logging.Level
 import io.granito.segovia.app.Application
 import org.openqa.selenium.Dimension
 import org.openqa.selenium.WebDriver
@@ -17,7 +18,6 @@ import org.springframework.context.annotation.Description
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Lazy
 import org.springframework.context.annotation.Scope
-import java.util.logging.Level
 
 @Configuration
 @ComponentScan

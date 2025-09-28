@@ -1,5 +1,6 @@
 package io.granito.segovia.web.controller
 
+import java.time.Instant
 import io.granito.segovia.core.model.Status
 import io.granito.segovia.core.usecase.GetStatusCase
 import org.junit.jupiter.api.BeforeEach
@@ -9,15 +10,14 @@ import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.hateoas.MediaTypes
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.test.publisher.TestPublisher.createCold
-import java.time.Instant
 
 @WebFluxTest(RootController::class)
 internal class RootControllerTest {
-    @MockBean
+    @MockitoBean
     private lateinit var getStatusCase: GetStatusCase
 
     @Autowired

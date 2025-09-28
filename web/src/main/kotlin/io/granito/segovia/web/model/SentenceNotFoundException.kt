@@ -1,8 +1,8 @@
 package io.granito.segovia.web.model
 
+import java.net.URI
 import org.springframework.http.HttpStatus
 import org.springframework.web.ErrorResponseException
-import java.net.URI
 
 class SentenceNotFoundException(id: String):
     ErrorResponseException(HttpStatus.NOT_FOUND) {

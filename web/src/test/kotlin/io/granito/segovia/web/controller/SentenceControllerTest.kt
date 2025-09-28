@@ -1,5 +1,6 @@
 package io.granito.segovia.web.controller
 
+import java.time.Instant
 import io.granito.segovia.core.model.Sentence
 import io.granito.segovia.core.model.Slug
 import io.granito.segovia.core.usecase.FetchSentenceCase
@@ -11,19 +12,19 @@ import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.hateoas.MediaTypes
 import org.springframework.http.MediaType
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.json.JsonCompareMode
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.test.publisher.TestPublisher.createCold
-import java.time.Instant
 
 @WebFluxTest(SentenceController::class)
 class SentenceControllerTest {
-    @MockBean
+    @MockitoBean
     private lateinit var searchSentencesCase: SearchSentencesCase
 
-    @MockBean
+    @MockitoBean
     private lateinit var fetchSentenceCase: FetchSentenceCase
 
     @Autowired
@@ -49,7 +50,7 @@ class SentenceControllerTest {
                     "self": { "href": "/api/v1/sentences" }
                   }
                 }
-                """.trimIndent(), true)
+                """.trimIndent(), JsonCompareMode.STRICT)
     }
 
     @Test
@@ -93,7 +94,7 @@ class SentenceControllerTest {
                     ]
                   }
                 }
-                """.trimIndent(), true)
+                """.trimIndent(), JsonCompareMode.STRICT)
     }
 
     @Test
@@ -149,7 +150,7 @@ class SentenceControllerTest {
                   "title": "Sentence is not found.",
                   "type": "https://segovia.granito.io/problem/not-found/sentence"
                 }
-                """.trimIndent(), true)
+                """.trimIndent(), JsonCompareMode.STRICT)
     }
 
     @Test
@@ -174,7 +175,7 @@ class SentenceControllerTest {
                   "id": "deadbeef",
                   "text": "Get it."
                 }
-                """.trimIndent(), true)
+                """.trimIndent(), JsonCompareMode.STRICT)
     }
 
     @Test
