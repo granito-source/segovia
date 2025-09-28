@@ -25,7 +25,7 @@ tasks {
 
     test {
         testLogging.showStandardStreams = true
-        systemProperties["concordion.output.dir"] = "${reporting.baseDir}/spec"
+        systemProperties["concordion.output.dir"] = "build/reports/spec"
         include("**/SpecFixture.class")
         outputs.upToDateWhen { false }
         jvmArgs("-XX:+EnableDynamicAgentLoading", "-Xshare:off")
