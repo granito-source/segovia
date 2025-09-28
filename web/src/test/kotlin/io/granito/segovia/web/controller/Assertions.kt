@@ -1,9 +1,9 @@
 package io.granito.segovia.web.controller
 
+import java.time.Instant
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
-import java.time.Instant
 
 fun WebTestClient.ResponseSpec.expect5xxError(from: Instant, to: Instant):
     WebTestClient.BodyContentSpec = expectStatus().is5xxServerError

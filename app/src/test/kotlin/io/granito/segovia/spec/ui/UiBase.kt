@@ -1,5 +1,7 @@
 package io.granito.segovia.spec.ui
 
+import java.net.URI
+import java.time.Duration
 import io.granito.segovia.spec.SpecBase
 import jakarta.annotation.PostConstruct
 import org.concordion.api.extension.Extension
@@ -11,8 +13,6 @@ import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.server.LocalServerPort
-import java.net.URI
-import java.time.Duration
 
 abstract class UiBase: SpecBase() {
     @LocalServerPort
@@ -33,7 +33,7 @@ abstract class UiBase: SpecBase() {
             return if (q != null) "$r?$q" else r
         }
 
-    val title: String
+    val title: String?
         get() = webDriver.title
 
     val body

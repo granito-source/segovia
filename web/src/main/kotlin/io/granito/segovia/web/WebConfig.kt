@@ -1,5 +1,6 @@
 package io.granito.segovia.web
 
+import java.util.concurrent.TimeUnit
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.databind.MapperFeature
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -15,7 +16,6 @@ import org.springframework.web.reactive.config.ResourceHandlerRegistry
 import org.springframework.web.reactive.config.WebFluxConfigurer
 import org.springframework.web.reactive.resource.PathResourceResolver
 import reactor.core.publisher.Mono
-import java.util.concurrent.TimeUnit
 
 private const val STATIC = "/META-INF/resources/"
 private val INDEX = ClassPathResource("${STATIC}index.html")

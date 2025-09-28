@@ -1,5 +1,6 @@
 package io.granito.segovia.spec
 
+import java.lang.reflect.Method
 import org.concordion.integration.junit4.ConcordionRunner
 import org.junit.runner.Description
 import org.junit.runner.notification.RunNotifier
@@ -10,7 +11,6 @@ import org.springframework.test.context.TestContextManager
 import org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks
 import org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks
 import org.springframework.util.ReflectionUtils
-import java.lang.reflect.Method
 
 class SpecRunner(clazz: Class<*>): ConcordionRunner(clazz) {
     private val testContextManager = TestContextManager(clazz)
