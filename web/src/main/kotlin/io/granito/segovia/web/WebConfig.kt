@@ -1,10 +1,9 @@
 package io.granito.segovia.web
 
 import java.util.concurrent.TimeUnit
-import com.fasterxml.jackson.annotation.JsonInclude.Include
-import com.fasterxml.jackson.databind.MapperFeature
+import com.fasterxml.jackson.annotation.JsonInclude
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Lazy
 import org.springframework.core.io.ClassPathResource
@@ -16,6 +15,8 @@ import org.springframework.web.reactive.config.ResourceHandlerRegistry
 import org.springframework.web.reactive.config.WebFluxConfigurer
 import org.springframework.web.reactive.resource.PathResourceResolver
 import reactor.core.publisher.Mono
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.MapperFeature
 
 private const val STATIC = "/META-INF/resources/"
 private val INDEX = ClassPathResource("${STATIC}index.html")
@@ -44,10 +45,12 @@ open class WebConfig: WebFluxConfigurer {
     }
 
     @Bean
-    open fun objectMapperBuilderCustomizer() = Jackson2ObjectMapperBuilderCustomizer {
-        it
-            .failOnUnknownProperties(true)
-            .featuresToEnable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
-            .serializationInclusion(Include.NON_NULL)
+    open fun jacksonCustomizer() = JsonMapperBuilderCustomizer {
+        builder -> builder
+            .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+            .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .changeDefaultPropertyInclusion {
+                it.withContentInclusion(JsonInclude.Include.NON_NULL)
+            }
     }
 }

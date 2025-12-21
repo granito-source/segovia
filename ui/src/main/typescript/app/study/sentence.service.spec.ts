@@ -1,9 +1,10 @@
 import { Accessor, Collection, HalError } from '@granito/ngx-hal-client';
-import { SpectatorHttp, createHttpFactory, createSpyObject, mockProvider } from '@ngneat/spectator/jest';
-import { cold } from 'jest-marbles';
+import { createHttpFactory, createSpyObject, mockProvider,
+    SpectatorHttp } from '@ngneat/spectator/vitest';
+import { cold } from '@granito/vitest-marbles';
 import { Subject } from 'rxjs';
 import { ApiRoot } from '../api/api-root';
-import { ApiRootService } from '../api/api-root.service';
+import { ApiService } from '../api/api.service';
 import { Sentence } from './sentence';
 import { SentenceService } from './sentence.service';
 
@@ -19,7 +20,7 @@ describe('SentenceService', () => {
         apiRoot = new Subject();
         spectator = createService({
             providers: [
-                mockProvider(ApiRootService, { apiRoot })
+                mockProvider(ApiService, { root: apiRoot })
             ]
         });
     });

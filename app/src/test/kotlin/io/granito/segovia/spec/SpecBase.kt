@@ -9,10 +9,12 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.test.context.ActiveProfiles
 
 @RunWith(SpecRunner::class)
 @SpringBootTest(classes = [SpecConfig::class], webEnvironment = RANDOM_PORT)
+@AutoConfigureWebTestClient
 @ActiveProfiles("test")
 @ConcordionOptions(declareNamespaces = ["cx", "urn:concordion-extensions:2010"])
 @FullOGNL

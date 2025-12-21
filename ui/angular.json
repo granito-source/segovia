@@ -11,11 +11,13 @@
       "prefix": "",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser-esbuild",
+          "builder": "@angular/build:application",
           "options": {
-            "outputPath": "build/resources/main/META-INF/resources",
+            "outputPath": {
+              "base": "build/resources/main/META-INF/resources",
+              "browser": ""
+            },
             "index": "src/main/typescript/index.html",
-            "main": "src/main/typescript/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -27,7 +29,8 @@
             "styles": [
               "src/main/typescript/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "browser": "src/main/typescript/main.ts"
           },
           "configurations": {
             "production": {
@@ -54,7 +57,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "proxyConfig": "src/main/typescript/proxy.conf.json"
           },
@@ -69,31 +72,46 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular/build:extract-i18n",
           "options": {
             "buildTarget": "segovia:build"
           }
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "configPath": "jest.config.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "tsConfig": "tsconfig.spec.json",
-            "assets": [
-              "src/main/typescript/favicon.ico",
-              "src/main/typescript/assets"
-            ],
-            "styles": [
-              "src/main/typescript/styles.css"
-            ],
-            "scripts": []
+            "watch": false,
+            "coverage": true,
+            "runnerConfig": "vitest.config.ts"
           }
         }
       }
+    }
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   }
 }

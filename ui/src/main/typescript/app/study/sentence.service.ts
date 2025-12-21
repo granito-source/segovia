@@ -1,7 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Collection, completeWith, defined, follow, readCollection } from '@granito/ngx-hal-client';
-import { Observable, ReplaySubject, catchError, map, of } from 'rxjs';
-import { ApiRootService } from '../api/api-root.service';
+import { Collection, completeWith, defined, follow,
+    readCollection } from '@granito/ngx-hal-client';
+import { catchError, map, Observable, of, ReplaySubject } from 'rxjs';
+import { ApiService } from '../api/api.service';
 import { Sentence } from './sentence';
 
 @Injectable({ providedIn: 'root' })
@@ -14,8 +15,8 @@ export class SentenceService implements OnDestroy {
         );
     }
 
-    constructor(apiRootService: ApiRootService) {
-        apiRootService.apiRoot.pipe(
+    constructor(apiService: ApiService) {
+        apiService.root.pipe(
             completeWith(this.sentences$),
             follow('sentences'),
             readCollection(Sentence),

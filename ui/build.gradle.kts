@@ -32,7 +32,7 @@ tasks {
     register<Exec>("npmTest") {
         dependsOn("npmInstall")
         description = "Run NPM project tests."
-        commandLine("npm", "test", "--", "--ci")
+        commandLine("npm", "test")
     }
 
     jar {
@@ -49,5 +49,5 @@ tasks {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }

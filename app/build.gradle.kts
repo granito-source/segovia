@@ -10,7 +10,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework:spring-webflux")
+    testImplementation("org.springframework.boot:spring-boot-webtestclient")
     testImplementation("org.concordion:concordion:4.0.1")
     testImplementation("org.concordion:concordion-screenshot-extension:1.3.0")
     testImplementation("org.seleniumhq.selenium:selenium-java")
@@ -40,5 +40,5 @@ tasks {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }

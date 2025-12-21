@@ -13,7 +13,7 @@ fun WebTestClient.ResponseSpec.expect5xxError(from: Instant, to: Instant):
         .jsonPath("$.error").isEqualTo("Internal Server Error")
         .jsonPath("$.timestamp").value<String> {
             assertThat(Instant.parse(it))
-                .isAfter(from)
-                .isBefore(to)
+                .isAfterOrEqualTo(from)
+                .isBeforeOrEqualTo(to)
         }
         .jsonPath("$.requestId").isNotEmpty
