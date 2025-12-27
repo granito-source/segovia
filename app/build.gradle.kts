@@ -11,10 +11,11 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-webtestclient")
-    testImplementation("org.concordion:concordion:4.0.1")
-    testImplementation("org.concordion:concordion-screenshot-extension:1.3.0")
+    testImplementation("io.granito.concordion:concordion-spring:1.0.3")
+    testImplementation("io.granito.concordion:concordion-ext-screenshot:1.0.3")
     testImplementation("org.seleniumhq.selenium:selenium-java")
-    testImplementation("org.junit.vintage:junit-vintage-engine")
+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks {
@@ -24,9 +25,10 @@ tasks {
     }
 
     test {
+        useJUnitPlatform()
+        include("**/SpecFixture.class")
         testLogging.showStandardStreams = true
         systemProperties["concordion.output.dir"] = "build/reports/spec"
-        include("**/SpecFixture.class")
         outputs.upToDateWhen { false }
         jvmArgs("-XX:+EnableDynamicAgentLoading", "-Xshare:off")
     }
