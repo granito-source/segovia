@@ -1,6 +1,6 @@
 import { Title } from '@angular/platform-browser';
 import { Spectator, createRoutingFactory,
-    mockProvider } from '@ngneat/spectator/jest';
+    mockProvider } from '@ngneat/spectator/vitest';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {

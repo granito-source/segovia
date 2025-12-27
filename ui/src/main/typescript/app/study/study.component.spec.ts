@@ -1,7 +1,7 @@
 import { Title } from '@angular/platform-browser';
-import { Spectator, byTestId, createComponentFactory,
-    mockProvider } from '@ngneat/spectator/jest';
-import { cold } from 'jest-marbles';
+import { byTestId, createComponentFactory, mockProvider,
+    Spectator } from '@ngneat/spectator/vitest';
+import { cold } from '@granito/vitest-marbles';
 import { Sentence } from './sentence';
 import { SentenceService } from './sentence.service';
 import { StudyComponent } from './study.component';

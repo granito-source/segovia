@@ -1,13 +1,18 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./build/out-tsc/spec",
     "types": [
-      "jest"
-    ]
+      "vitest/globals"
+    ],
+    "skipLibCheck": true
   },
   "include": [
-    "src/main/typescript/**/*.spec.ts",
-    "src/main/typescript/**/*.d.ts"
+    "src/main/typescript/**/*.spec.ts"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    }
   ]
 }

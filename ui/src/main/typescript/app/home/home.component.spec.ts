@@ -1,6 +1,6 @@
 import { Title } from '@angular/platform-browser';
 import { Spectator, byTestId, createComponentFactory,
-    mockProvider } from '@ngneat/spectator/jest';
+    mockProvider } from '@ngneat/spectator/vitest';
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {

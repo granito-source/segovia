@@ -2,6 +2,7 @@ package io.granito.segovia.spec.ui
 
 import java.net.URI
 import java.time.Duration
+import io.granito.concordion.ext.SeleniumScreenshotExtension
 import io.granito.segovia.spec.SpecBase
 import jakarta.annotation.PostConstruct
 import org.concordion.api.extension.Extension
