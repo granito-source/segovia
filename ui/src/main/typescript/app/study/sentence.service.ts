@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Collection, completeWith, defined, follow,
+import { Collection, completeWith, follow,
     readCollection } from '@granito/ngx-hal-client';
-import { catchError, map, Observable, of, ReplaySubject } from 'rxjs';
+import { catchError, EMPTY, filter, map, Observable, ReplaySubject } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { Sentence } from './sentence';
 
@@ -19,9 +19,9 @@ export class SentenceService implements OnDestroy {
         apiService.root.pipe(
             completeWith(this.sentences$),
             follow('sentences'),
+            filter(accessor => accessor.canRead),
             readCollection(Sentence),
-            catchError(this.handleError),
-            defined()
+            catchError(this.handleError)
         ).subscribe(collection => this.sentences$.next(collection));
     }
 
@@ -29,9 +29,9 @@ export class SentenceService implements OnDestroy {
         this.sentences$.complete();
     }
 
-    private handleError(error: Error): Observable<undefined> {
+    private handleError(error: Error): Observable<never> {
         console.log(`error reading sentences: ${error.message}`);
 
-        return of(undefined);
+        return EMPTY;
     }
 }

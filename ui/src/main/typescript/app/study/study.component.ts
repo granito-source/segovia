@@ -7,7 +7,6 @@ import { SentenceService } from './sentence.service';
 
 @Component({
     selector: 'study',
-    standalone: true,
     templateUrl: './study.component.html',
     styleUrl: './study.component.css'
 })
