@@ -1,7 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Collection, completeWith, follow,
     readCollection } from '@granito/ngx-hal-client';
-import { catchError, EMPTY, filter, map, Observable, ReplaySubject } from 'rxjs';
+import { catchError, EMPTY, filter, map, Observable,
+    ReplaySubject } from 'rxjs';
 import { ApiService } from '../api/api.service';
 import { Sentence } from './sentence';
 
