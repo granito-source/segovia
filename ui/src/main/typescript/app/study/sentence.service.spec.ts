@@ -1,6 +1,6 @@
 import { Accessor, Collection, HalError } from '@granito/ngx-hal-client';
-import { createHttpFactory, createSpyObject, mockProvider,
-    SpectatorHttp } from '@ngneat/spectator/vitest';
+import { createHttpFactory, createSpyObject, mockProvider, SpectatorHttp,
+    SpyObject } from '@ngneat/spectator/vitest';
 import { cold } from '@granito/vitest-marbles';
 import { Subject } from 'rxjs';
 import { ApiRoot } from '../api/api-root';
@@ -15,9 +15,14 @@ describe('SentenceService', () => {
 
     let apiRoot: Subject<ApiRoot>;
     let spectator: SpectatorHttp<SentenceService>;
+    let api: SpyObject<ApiRoot>;
+    let accessor: SpyObject<Accessor>;
 
     beforeEach(() => {
         apiRoot = new Subject();
+        api = createSpyObject(ApiRoot);
+        accessor = createSpyObject(Accessor, { canRead: true });
+        api.follow.andReturn(accessor);
         spectator = createService({
             providers: [
                 mockProvider(ApiService, { root: apiRoot })
@@ -42,28 +47,21 @@ describe('SentenceService', () => {
             expect(spectator.service.sentences).toBeObservable(cold(''));
         });
 
-        it('presents nothing when API root has no link', () => {
-            const api = createSpyObject(ApiRoot);
-            const timer = cold('--t');
+        it('presents nothing when API root has no readable link', () => {
+            accessor.castToWritable().canRead = false;
 
-            api.follow.andReturn(undefined);
-
-            timer.subscribe(() => apiRoot.next(api));
+            cold('--t').subscribe(() => apiRoot.next(api));
 
             expect(spectator.service.sentences).toBeObservable(cold(''));
-            expect(timer).toSatisfyOnFlush(() => {
+            expect(cold('')).toSatisfyOnFlush(() => {
                 expect(api.follow).toHaveBeenCalledTimes(1);
                 expect(api.follow)
                     .toHaveBeenCalledWith('sentences', undefined);
+                expect(accessor.readCollection).not.toHaveBeenCalled();
             });
         });
 
         it('presents API results when API root has link', () => {
-            const api = createSpyObject(ApiRoot);
-            const accessor = createSpyObject(Accessor);
-            const timer = cold('--t');
-
-            api.follow.andReturn(accessor);
             accessor.readCollection.andReturn(cold('-s|', {
                 s: new Collection(Sentence, {
                     _embedded: {
@@ -75,7 +73,7 @@ describe('SentenceService', () => {
                 })
             }));
 
-            timer.subscribe(() => apiRoot.next(api));
+            cold('--t').subscribe(() => apiRoot.next(api));
 
             expect(spectator.service.sentences).toBeObservable(cold('---s', {
                 s: [
@@ -83,7 +81,7 @@ describe('SentenceService', () => {
                     new Sentence({ id: 'two', text: 'Two.' })
                 ]
             }));
-            expect(timer).toSatisfyOnFlush(() => {
+            expect(cold('')).toSatisfyOnFlush(() => {
                 expect(api.follow).toHaveBeenCalledTimes(1);
                 expect(api.follow)
                     .toHaveBeenCalledWith('sentences', undefined);
@@ -94,15 +92,10 @@ describe('SentenceService', () => {
         });
 
         it('presents nothing when API call fails', () => {
-            const api = createSpyObject(ApiRoot);
-            const accessor = createSpyObject(Accessor);
-            const timer = cold('--t');
-
-            api.follow.andReturn(accessor);
             accessor.readCollection.andReturn(cold('--#', undefined,
                 new HalError({ message: 'read collection' })));
 
-            timer.subscribe(() => apiRoot.next(api));
+            cold('--t').subscribe(() => apiRoot.next(api));
 
             expect(spectator.service.sentences).toBeObservable(cold(''));
         });
